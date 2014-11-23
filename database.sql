@@ -30,9 +30,8 @@ CREATE TABLE IF NOT EXISTS `hoods` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `net` varchar(255) NOT NULL,
-  `lat` double NOT NULL,
-  `lon` double NOT NULL,
-  `radius` float NOT NULL,
+  `lat` double NULL,
+  `lon` double NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
@@ -40,14 +39,14 @@ CREATE TABLE IF NOT EXISTS `hoods` (
 -- Daten für Tabelle `hoods`
 --
 
-INSERT INTO `hoods` (`ID`, `name`, `net`, `lat`, `lon`, `radius`) VALUES
-(1, 'default', '10.50.16.0/20', -1, -1, -1),
-(2, 'fuerth', '10.50.32.0/21', 49.47833, 10.99027, 4),
-(3, 'nuernberg', '10.50.40.0/21', 49.448856931202, 11.082108258271, 10),
-(4, 'ansbach', '10.50.48.0/21', 49.300833, 10.571667, 10),
-(5, 'haßberge', '10.50.56.0/22', 50.093555895082, 10.568013390003, 10),
-(6, 'erlangen', '10.50.64.0/21', 49.6005981, 11.0019221, 10),
-(7, 'wuerzburg', '10.50.72.0/21', 49.79688, 9.93489, 20);
+INSERT INTO `hoods` (`ID`, `name`, `net`, `lat`, `lon`) VALUES
+(1, 'trainstation', '10.50.16.0/20',    NULL,      NULL     ),
+(2, 'fuerth',       '10.50.32.0/21',    49.478330, 10.990270),
+(3, 'nuernberg',    '10.50.40.0/21',    49.448856, 11.082108),
+(4, 'ansbach',      '10.50.48.0/21',    49.300833, 10.571667),
+(5, 'haßberge',     '10.50.56.0/22',    50.093555, 10.568013),
+(6, 'erlangen',     '10.50.64.0/21',    49.600598, 11.001922),
+(7, 'wuerzburg',    '10.50.72.0/21',    49.796880,  9.934890);
 
 -- --------------------------------------------------------
 
