@@ -135,7 +135,7 @@ function getLocationByMacOrName($mac,$name){
 function getHoodByGeo($lat,$lon){
   // load hoods from DB
   try {
-    $rs = db::getInstance()->prepare('SELECT * FROM `hoods`'.$sql);
+    $rs = db::getInstance()->prepare('SELECT * FROM `hoods`');
     $rs->execute();
   }
   catch(PDOException $e)
