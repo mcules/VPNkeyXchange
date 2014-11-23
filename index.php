@@ -166,7 +166,7 @@ function getHoodByGeo($lat, $lon) {
 		$hoodCenterLon = $result ['lon'];
 		$hoodID = $result ['ID'];
 		
-		if ($hoodCenterLat <= 0 || $hoodCenterLon <= 0) {
+		if (is_null($hoodCenterLat) || is_null($hoodCenterLon)) {
 			continue;
 		}
 		
