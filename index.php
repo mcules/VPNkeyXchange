@@ -98,7 +98,7 @@ function getLocationByMacOrName($mac,$name){
   elseif($name)
     $url = 'https://netmon.freifunk-franken.de/api/rest/router/'.$name;
   else{
-    if(DEBUG) print_r('ERROR: MAC and NAME invalid! mac: '.$mac.', name:'.$name."\n");
+    debug('ERROR: MAC and NAME invalid! mac: '.$mac.', name:'.$name);
 
     return [];
   }
@@ -107,8 +107,7 @@ function getLocationByMacOrName($mac,$name){
     exit('Failed to open '.$url);
 
   if($netmon_response->request->error_code > 0){
-    if(DEBUG) print_r('WARN: '.$netmon_response->request->error_message."\n" );
-
+    debug('WARN: '.$netmon_response->request->error_message);
     return [];
   }
 
@@ -116,13 +115,11 @@ function getLocationByMacOrName($mac,$name){
   $nodeLat = floatval($netmon_response->router->latitude);
   $nodeLon = floatval($netmon_response->router->longitude);
   if ($nodeLat == 0 || $nodeLon == 0){
-    if(DEBUG) print_r('WARN nodeLat: '.$nodeLat.', nodeLon: '.$nodeLon."\n");
-
+    debug('WARN nodeLat: '.$nodeLat.', nodeLon: '.$nodeLon);
     return [];
   }
 
-  if(DEBUG) print_r('nodeLat: '.$nodeLat', nodeLon: '.$nodeLon."\n");
-
+  debug('nodeLat: '.$nodeLat', nodeLon: '.$nodeLon);
   return array($nodeLat,$nodeLon);
 }
 
@@ -148,24 +145,29 @@ function getHoodByGeo($lat,$lon){
   $current_hood=DEFAULT_HOOD_ID;
   // check for every hood if it's nearer than the hood before
   while($result = $rs->fetch(PDO::FETCH_ASSOC)){
-    if(DEBUG) print_r("\n\nhood: ".$result['name']."\n");
+    debug("\n\nhood: ".$result['name']);
 
     if(is_null($result['lat']) || is_null($result['lon']))
       continue;
 
-    if(DEBUG) print_r('hoodCenterLat: '.$result['lat'].', hoodCenterLon: '.$result['lon'].', hoodID: '.$result['ID']."\n" );
+    debug('hoodCenterLat: '.$result['lat'].', hoodCenterLon: '.$result['lon'].', hoodID: '.$result['ID']);
 
     $distance = distance_haversine($result['lat'],$result['lon'],$lat,$lon);
-    if(DEBUG) print_r("distance: $distance\n");
+    debug('distance: $distance');
 
     if ($distance <= $current_hood_dist) {
-      if(DEBUG) print_r('Node belongs to Hood '.$result['ID'].'('.$result['name'].')'."\n");
+      debug('Node belongs to Hood '.$result['ID'].'('.$result['name'].')');
       $current_hood_dist = $distance;
       $current_hood = $result['ID'];
     }
   }
 
   return $current_hood;
+}
+
+function debug($msg){
+  if(DEBUG)
+    print_r($msg."\n");
 }
 
 // ----------------------------------------------------------------------------
