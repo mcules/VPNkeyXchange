@@ -155,37 +155,37 @@ function getHoodByGeo($lat, $lon) {
 		exit ( showError ( 500, $e ) );
 	}
 	
-	// check for every hood if node is within the given radius
+	$current_hood_dist=99999999;
+	$current_hood=$DEFAULT_HOOD_ID;
+	// check for every hood if it's nearer than the hood before
 	while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 		if ($debug)
 			print_r ( "\n\nhood: " . $result ['name'] . "\n" );
 		
 		$hoodCenterLat = $result ['lat'];
 		$hoodCenterLon = $result ['lon'];
-		$hoodRadius = $result ['radius'];
 		$hoodID = $result ['ID'];
 		
-		if ($hoodCenterLat <= 0 || $hoodCenterLon <= 0 || $hoodRadius <= 0) {
+		if ($hoodCenterLat <= 0 || $hoodCenterLon <= 0) {
 			continue;
 		}
 		
 		if ($debug)
-			print_r ( "hoodCenterLat: $hoodCenterLat, \nhoodCenterLon: $hoodCenterLon, \nhoodRadius: $hoodRadius, \nhoodID: $hoodID \n" );
+			print_r ( "hoodCenterLat: $hoodCenterLat, \nhoodCenterLon: $hoodCenterLon, \nhoodID: $hoodID \n" );
 		
 		$distance = distance_haversine ( $hoodCenterLat, $hoodCenterLon, $lat, $lon );
 		if ($debug)
-			print_r ( "distance: $distance, \nhoodRadius: $hoodRadius \n\n" );
+			print_r ( "distance: $distance\n\n" );
 		
-		if ($distance <= $hoodRadius) {
+		if ($distance <= $current_hood_dist) {
 			if ($debug)
 				print_r ( "Node belongs to Hood " . $hoodID . " (" . $result ['name'] . ")" . "\n\n" );
-			return $hoodID;
+			$current_hood_dist=$distance;
+			$current_hood= $hoodID;
 		}
 	}
 	
-	if ($debug)
-		print_r ( "No Hood found. This means default-hood.\n" );
-	return $DEFAULT_HOOD_ID;
+	return $current_hood;
 }
 
 // ----------------------------------------------------------------------------
