@@ -8,7 +8,7 @@
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
 $DEFAULT_HOOD_ID = 1;
-$INVALID_MAC = '000000000000';
+$INVALID_MAC = 'AAAAAAAAAAAA';
 $debug = false;
 
 /**
@@ -47,12 +47,12 @@ function showError($code, $msg) {
 		header ( "HTTP/1.0 503 Service Unavailable" );
 	}
 	header ( "Content-Type: application/json" );
-	
+
 	$errorObject = array (
 			'error' => array (
 					'msg' => $msg,
-					'url' => "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" 
-			) 
+					'url' => "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"
+			)
 	);
 	print_r ( json_encode ( $errorObject ) );
 }
@@ -97,7 +97,7 @@ function distance_haversine($lat1, $lon1, $lat2, $lon2) {
  */
 function getLocationByMacOrName($mac, $name) {
 	global $debug;
-	
+
 	if ($mac) {
 		$url = "https://netmon.freifunk-franken.de/api/rest/router/" . $mac;
 	} elseif ($name) {
@@ -107,16 +107,16 @@ function getLocationByMacOrName($mac, $name) {
 			print_r ( "ERROR: MAC and NAME invalid: mac: " . $mac . ", name: " . $name . "\n" );
 		return [ ];
 	}
-	
+
 	if (! $netmon_response = simplexml_load_file ( $url ))
 		exit ( 'Failed to open ' . $url );
-	
+
 	if ($netmon_response->request->error_code > 0) {
 		if ($debug)
 			print_r ( "WARN: " . $netmon_response->request->error_message . "\n" );
 		return [ ];
 	}
-	
+
 	// get geo-location
 	$nodeLat = floatval ( $netmon_response->router->latitude );
 	$nodeLon = floatval ( $netmon_response->router->longitude );
@@ -125,12 +125,12 @@ function getLocationByMacOrName($mac, $name) {
 			print_r ( "WARN nodeLat: " . $nodeLat . ", nodeLon: " . $nodeLon . "\n" );
 		return [ ];
 	}
-	
+
 	if ($debug)
 		print_r ( "nodeLat: $nodeLat, \nnodeLon: $nodeLon \n\n" );
 	return array (
 			$nodeLat,
-			$nodeLon 
+			$nodeLon
 	);
 }
 
@@ -146,7 +146,7 @@ function getLocationByMacOrName($mac, $name) {
 function getHoodByGeo($lat, $lon) {
 	global $debug;
 	global $DEFAULT_HOOD_ID;
-	
+
 	// load hoods from DB
 	try {
 		$rs = db::getInstance ()->prepare ( "SELECT * FROM `hoods`$sql" );
@@ -154,29 +154,29 @@ function getHoodByGeo($lat, $lon) {
 	} catch ( PDOException $e ) {
 		exit ( showError ( 500, $e ) );
 	}
-	
+
 	$current_hood_dist=99999999;
 	$current_hood=$DEFAULT_HOOD_ID;
 	// check for every hood if it's nearer than the hood before
 	while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 		if ($debug)
 			print_r ( "\n\nhood: " . $result ['name'] . "\n" );
-		
-		$hoodCenterLat = $result ['lat'];
+
+		$hoodCenterLat = $result['lat'];
 		$hoodCenterLon = $result ['lon'];
 		$hoodID = $result ['ID'];
-		
+
 		if (is_null($hoodCenterLat) || is_null($hoodCenterLon)) {
 			continue;
 		}
-		
+
 		if ($debug)
 			print_r ( "hoodCenterLat: $hoodCenterLat, \nhoodCenterLon: $hoodCenterLon, \nhoodID: $hoodID \n" );
-		
+
 		$distance = distance_haversine ( $hoodCenterLat, $hoodCenterLon, $lat, $lon );
 		if ($debug)
 			print_r ( "distance: $distance\n\n" );
-		
+
 		if ($distance <= $current_hood_dist) {
 			if ($debug)
 				print_r ( "Node belongs to Hood " . $hoodID . " (" . $result ['name'] . ")" . "\n\n" );
@@ -184,7 +184,7 @@ function getHoodByGeo($lat, $lon) {
 			$current_hood= $hoodID;
 		}
 	}
-	
+
 	return $current_hood;
 }
 
@@ -224,17 +224,17 @@ if ($ip && $name && $key) {
 	if (! preg_match ( '/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/', $name )) {
 		exit ( showError ( 400, "invalid name" ) );
 	}
-	
+
 	if ($mac != $INVALID_MAC) {
 		$sql = '
-		SELECT * FROM nodes 
+		SELECT * FROM nodes
 		WHERE mac = :mac;';
 	} else {
 		$sql = '
-		SELECT * FROM nodes 
+		SELECT * FROM nodes
 		WHERE mac = \'' . $INVALID_MAC . '\' AND name = :name;';
 	}
-	
+
 	try {
 		$rs = db::getInstance ()->prepare ( $sql );
 		if ($mac != $INVALID_MAC) {
@@ -246,21 +246,21 @@ if ($ip && $name && $key) {
 	} catch ( PDOException $e ) {
 		exit ( showError ( 500, $e ) );
 	}
-	
+
 	if ($rs->rowCount () > 1) {
 		exit ( showError ( 500, "To much nodes with mac=$mac, name=$name" ) );
 	}
-	
+
 	if ($rs->rowCount () == 1) {
 		$result = $rs->fetch ( PDO::FETCH_ASSOC );
 		$gateway = $result ['isgateway'];
-		
+
 		if (! $result ['readonly']) {
 			$sql = '
-			UPDATE nodes 
-			SET 
-				ip = :ip, mac = :mac, name = :name, `key` = :key, port = :port, timestamp = CURRENT_TIMESTAMP 
-			WHERE 
+			UPDATE nodes
+			SET
+				ip = :ip, mac = :mac, name = :name, `key` = :key, port = :port, timestamp = CURRENT_TIMESTAMP
+			WHERE
 				ID = :id';
 			try {
 				$rs = db::getInstance ()->prepare ( $sql );
@@ -277,9 +277,9 @@ if ($ip && $name && $key) {
 		}
 	} else {
 		$sql = '
-		INSERT INTO nodes 
-			(ip, mac, name, `key`, port, readonly, isgateway, hood_ID) 
-		VALUES 
+		INSERT INTO nodes
+			(ip, mac, name, `key`, port, readonly, isgateway, hood_ID)
+		VALUES
 			(:ip, :mac, :name, :key, :port, 0, 0, :hood);';
 		try {
 			$rs = db::getInstance ()->prepare ( $sql );
@@ -299,13 +299,13 @@ if ($ip && $name && $key) {
 // return either all nodes (if gateway) or all gateways (if node) from the hood
 if ($gateway) {
 	$sql = '
-	SELECT * FROM nodes 
-	WHERE 
+	SELECT * FROM nodes
+	WHERE
 		hood_ID = :hood;';
 } else {
 	$sql = '
-	SELECT * FROM nodes 
-	WHERE 
+	SELECT * FROM nodes
+	WHERE
 		hood_ID = :hood AND isgateway = \'1\';';
 }
 try {
@@ -319,12 +319,12 @@ try {
 // return results in a easy parsable way
 if ($rs->rowCount () > 0) {
 	while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
-		
+
 		$filename = $result ['mac'];
 		if ($filename == $INVALID_MAC) {
 			$filename = $result ['name'];
 		}
-		
+
 		echo "####" . $filename . ".conf\n";
 		echo "#name \"" . $result ['name'] . "\";\n";
 		echo "key \"" . $result ['key'] . "\";\n";
