@@ -5,4 +5,7 @@ $mysql_db = "fff_xchange";
 $mysql_user = "fff_xchange";
 $mysql_pass = "xxxxxxxxxxxxx";
 
+//$netmon_server = "https://netmon.freifunk-franken.de";
+$netmon_server = "http://localhost";
+
 ?>

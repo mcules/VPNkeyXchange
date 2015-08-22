@@ -90,7 +90,8 @@ function distance_haversine($lat1,$lon1,$lat2,$lon2){
  * @return array[lat, lon] or []
  */
 function getLocationByMacOrName($mac){
-  $url = 'https://netmon.freifunk-franken.de/api/rest/router/'.$mac;
+  require('config.inc.php');
+  $url = $netmon_server.'/api/rest/router/'.$mac;
 
   if(!$netmon_response = simplexml_load_file($url)) {
     debug('ERROR: Failed to open '.$url);
