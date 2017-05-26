@@ -224,15 +224,20 @@ if(isset($ip) && $ip && isset($name) && $name && isset($key) && $key) {
       $updateHood=false;
       if (!$result['isgateway']) {
         // discover the best hood-id from netmons geo-location
-        $location = getLocationByMacOrName($mac == INVALID_MAC ? $name : $mac);
+        //$location = getLocationByMacOrName($mac == INVALID_MAC ? $name : $mac);
 
-        if($location && $location[0] && $location[1]) {
-          $hood = getHoodByGeo($location[0],$location[1]);
+        //if($location && $location[0] && $location[1]) {
+        //  $hood = getHoodByGeo($location[0],$location[1]);
 
-          if ($hood != $result['hood_ID']) {
-            $updateHood=true;
-          }
-        }
+        //  if ($hood != $result['hood_ID']) {
+        //    $updateHood=true;
+        //  }
+        //}
+	if ($result['hood_ID'] != 0)
+	{
+		$updateHood=true;
+		$hood = 0;
+	}
       }
 
       if ($updateHood)
@@ -257,10 +262,10 @@ if(isset($ip) && $ip && isset($name) && $name && isset($key) && $key) {
     }
   }
   else{
-    $location = getLocationByMacOrName($mac == INVALID_MAC ? $name : $mac);
+    //$location = getLocationByMacOrName($mac == INVALID_MAC ? $name : $mac);
 
-    if($location && $location[0] && $location[1])
-      $hood = getHoodByGeo($location[0],$location[1]);
+    //if($location && $location[0] && $location[1])
+    //  $hood = getHoodByGeo($location[0],$location[1]);
 
     $sql = 'INSERT INTO nodes(ip,mac,name,`key`,port,readonly,isgateway,hood_ID) VALUES (:ip,:mac,:name,:key,:port,0,0,:hood);';
     try{
