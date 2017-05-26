@@ -8,7 +8,7 @@
  *
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
-const DEFAULT_HOOD_ID = 1;
+const DEFAULT_HOOD_ID = 0;
 const INVALID_MAC = 'AAAAAAAAAAAA';
 const DEBUG = false;
 
@@ -220,7 +220,7 @@ if(isset($ip) && $ip && isset($name) && $name && isset($key) && $key) {
 
     $hood = $result['hood_ID'];
 
-    if (!$result['readonly']) {
+    if (!$result['readonly'] && !$result['notrain']) {
       $updateHood=false;
       if (!$result['isgateway']) {
         // discover the best hood-id from netmons geo-location
