@@ -53,112 +53,6 @@ function showError($code,$msg){
   print_r(json_encode($errorObject));
 }
 
-/**
- * Haversine distance function in km
- * https://en.wikipedia.org/wiki/Haversine_formula
- *
- * @param double $lat1
- *          latitude point 1
- * @param double $lon1
- *          longitude point 1
- * @param double $lat2
- *          latitude point 2
- * @param double $lon2
- *          longitude point 2
- * @return integer distance between the points in km
- */
-const EARTH_RADIUS = 6371;
-
-function distance_haversine($lat1,$lon1,$lat2,$lon2){
-  $delta_lat = $lat1-$lat2;
-  $delta_lon = $lon1-$lon2;
-  $alpha = $delta_lat/2;
-  $beta = $delta_lon/2;
-  $a = sin(deg2rad($alpha))*sin(deg2rad($alpha))+cos(deg2rad($lat1))*cos(deg2rad($lat2))*sin(deg2rad($beta))*sin(deg2rad($beta));
-  $c = asin(min(1,sqrt($a)));
-  $distance = 2*EARTH_RADIUS*$c;
-  $distance = round($distance,3);
-  return $distance;
-}
-
-/**
- * Try to read the geo coodinates from netmon and
- * return them as an array [lat, lon].
- * In case of error return empty array.
- *
- * @param $mac search for the router by the mac adress or by name
- * @return array[lat, lon] or []
- */
-function getLocationByMacOrName($mac){
-  require('config.inc.php');
-  $url = $netmon_server.'/api/rest/router/'.$mac;
-
-  if(!$netmon_response = simplexml_load_file($url)) {
-    debug('ERROR: Failed to open '.$url);
-    return [];
-  }
-
-  if($netmon_response->request->error_code > 0){
-    debug('WARN: '.$netmon_response->request->error_message);
-    return [];
-  }
-
-  // get geo-location
-  $nodeLat = floatval($netmon_response->router->latitude);
-  $nodeLon = floatval($netmon_response->router->longitude);
-  if ($nodeLat == 0 || $nodeLon == 0){
-    debug('WARN nodeLat: '.$nodeLat.', nodeLon: '.$nodeLon);
-    return [];
-  }
-
-  debug('nodeLat: '.$nodeLat.', nodeLon: '.$nodeLon);
-  return array($nodeLat,$nodeLon);
-}
-
-/**
- * Check is the given geo coordinates are within one of the hoods.
- *
- * @param double $lat
- *          latitude point 1
- * @param double $lon
- *          longitude point 1
- * @return integer hood-id
- */
-function getHoodByGeo($lat,$lon){
-  $current_hood_dist=99999999;
-  $current_hood=DEFAULT_HOOD_ID;
-
-  // load hoods from DB
-  try {
-    $rs = db::getInstance()->prepare('SELECT * FROM `hoods`');
-    $rs->execute();
-  }
-  catch(PDOException $e) {
-    exit(showError(500,$e));
-  }
-
-  // check for every hood if it's nearer than the hood before
-  while($result = $rs->fetch(PDO::FETCH_ASSOC)){
-    debug("\n\nhood: ".$result['name']);
-
-    if(is_null($result['lat']) || is_null($result['lon']))
-      continue;
-
-    debug('hoodCenterLat: '.$result['lat'].', hoodCenterLon: '.$result['lon'].', hoodID: '.$result['ID']);
-
-    $distance = distance_haversine($result['lat'],$result['lon'],$lat,$lon);
-    debug('distance: $distance');
-
-    if ($distance <= $current_hood_dist) {
-      debug('Node belongs to Hood '.$result['ID'].'('.$result['name'].')');
-      $current_hood_dist = $distance;
-      $current_hood = $result['ID'];
-    }
-  }
-
-  return $current_hood;
-}
-
 function debug($msg){
   if(DEBUG)
     print_r($msg."\n");
@@ -223,21 +117,10 @@ if(isset($ip) && $ip && isset($name) && $name && isset($key) && $key) {
     if (!$result['readonly'] && !$result['notrain']) {
       $updateHood=false;
       if (!$result['isgateway']) {
-        // discover the best hood-id from netmons geo-location
-        //$location = getLocationByMacOrName($mac == INVALID_MAC ? $name : $mac);
-
-        //if($location && $location[0] && $location[1]) {
-        //  $hood = getHoodByGeo($location[0],$location[1]);
-
-        //  if ($hood != $result['hood_ID']) {
-        //    $updateHood=true;
-        //  }
-        //}
-	if ($result['hood_ID'] != 0)
-	{
-		$updateHood=true;
-		$hood = 0;
-	}
+        if ($result['hood_ID'] != 0) {
+          $updateHood=true;
+          $hood = 0;
+        }
       }
 
       if ($updateHood)
@@ -262,11 +145,6 @@ if(isset($ip) && $ip && isset($name) && $name && isset($key) && $key) {
     }
   }
   else{
-    //$location = getLocationByMacOrName($mac == INVALID_MAC ? $name : $mac);
-
-    //if($location && $location[0] && $location[1])
-    //  $hood = getHoodByGeo($location[0],$location[1]);
-
     $sql = 'INSERT INTO nodes(ip,mac,name,`key`,port,readonly,isgateway,hood_ID) VALUES (:ip,:mac,:name,:key,:port,0,0,:hood);';
     try{
       $rs = db::getInstance()->prepare($sql);
