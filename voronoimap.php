@@ -10,6 +10,7 @@ try {
 }
 
 $hoods = array();
+$hoodssort = array();
 while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 	if ($result ['lat'] > 0 && $result ['lon'] > 0) {
 		array_push($hoods, array(
@@ -19,8 +20,11 @@ while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 			'lon' => $result ['lon'],
 			'color' => "#F00" 
 		));
+		array_push($hoodssort,$result['name']);
 	}
 }
+array_multisort($hoodssort, SORT_ASC, $hoods);
+
 ?>
 
 <!DOCTYPE html>
