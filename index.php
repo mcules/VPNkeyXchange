@@ -5,7 +5,7 @@
  * @author RedDog <reddog@mastersword.de>
  * @author delphiN <freifunk@wunschik.net>
  * @author Mose <mose@fabfolk.com>
- * @author ChristianDr <fff@chrisi01.de>
+ * @author Christian Dresel <fff@chrisi01.de>
  *
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
@@ -16,6 +16,7 @@ name,
 ESSID_AP as essid,
 BSSID_MESH as mesh_bssid,
 ESSID_MESH as mesh_essid,
+mesh_id,
 protocol,
 channel2,
 mode2,
