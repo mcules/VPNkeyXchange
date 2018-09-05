@@ -15,6 +15,7 @@ while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 	$hood['id']   = intval($result['ID']);
 	$hood['name'] = $result['name'];
 	$hood['net']  = $result['net'];
+	$hood['essid_ap'] = $result['ESSID_AP'];
 	if ($result ['lat'] > 0 && $result ['lon'] > 0) {
 		$hood['lat'] = floatval($result['lat']);
 		$hood['lon'] = floatval($result['lon']);
