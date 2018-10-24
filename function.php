@@ -1,4 +1,6 @@
 <?php
+
+//Quelle: https://gist.github.com/jeremejazz/5219848
 class pointLocation {
     var $pointOnVertex = true; // Check if the point sits exactly on one of the vertices?
  
