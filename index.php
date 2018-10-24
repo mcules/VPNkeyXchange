@@ -9,6 +9,10 @@
  *
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
+
+
+include("function.php");
+
 const DEBUG = false;
 
 const hood_mysql_fields = 'ID,
@@ -221,15 +225,150 @@ function getAllVPNs($hoodId)
 $hood = array();
 if (isset($_GET['lat']) && $_GET['lat']!=="" && isset($_GET['long']) && $_GET['long']!=="")
 {
-  debug("Searching a hood on ".$_GET['lat']." ".$_GET['long'].":");
-  $hood = getHoodByGeo($_GET['lat'],$_GET['long']);
-  if (!empty($hood))
+  $lat = $_GET['lat'];
+  $lon = $_GET['long'];
+  if (!is_numeric($lat) OR !is_numeric($lon)) { 
+    echo "nix sqlinject";
+    exit;
+  }/*
+  #als allererstes den Cache abfrage
+  try
   {
-    debug($hood);
+    $q = "SELECT * FROM cache WHERE lat=".$lat." AND lon = ".$lon.";";
+    $rs = db::getInstance()->prepare($q);
+    $rs->execute();
   }
+  catch(PDOException $e)
+  {
+    exit(showError(500,$e));
+  }
+  $result = $rs->fetch(PDO::FETCH_ASSOC);
+  if($result['hoodid']) {
+    try
+    {
+      $hoodid = $result['hoodid'];
+      $q = "SELECT ".hood_mysql_fields." FROM hoods WHERE id=".$hoodid.";";
+      $rs = db::getInstance()->prepare($q);
+      $rs->execute();
+    }
+    catch(PDOException $e)
+    {
+      exit(showError(500,$e));
+    }
+    $hood = $rs->fetch(PDO::FETCH_ASSOC);
+    $cache=true;
+    debug("Data come from cache");
+  }    
+  if(!$cache) {
+    debug("No data in cache"); */
+    #zuerst nach geojson hood prüfen 
+    $pointLocation = new pointLocation();
+//    $points = array("$lon $lat");
+
+    #zuerst Anzal Polyhoods zählen:
+    try{
+      $sql = 'SELECT DISTINCT polyid FROM polyhood';
+      $rs = db::getInstance()->prepare($sql);
+      $rs->execute();
+    }
+    catch(PDOException $e) {
+      exit(showError(500,$e));
+    }
+    $polyhoodmenge=$rs->rowCount();
+    debug($polyhoodmenge);
+    $i=1;
+    while ($i <= $polyhoodmenge AND $found == 0) {
+    try{
+      $sql = 'SELECT * FROM polyhood WHERE polyid='.$i.'';
+      $rs = db::getInstance()->prepare($sql);
+      $rs->execute();
+    }
+    catch(PDOException $e) {
+      exit(showError(500,$e));
+    }
+    $polygon = array();
+    // return results in a easy parsable way
+    if($rs->rowCount() > 0){
+      while($result = $rs->fetch(PDO::FETCH_ASSOC)){
+        array_push($polygon, $result['koord']);
+        $hoodid = $result['hoodid'];
+debug ("r");
+     }
+    }
+
+
+    //foreach($points as $key => $point) {
+    $point = "$lon $lat";
+     debug("point " . ($key+1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");
+      if ($pointLocation->pointInPolygon($point, $polygon) == 1) {
+        debug("PolyHood gefunden...");
+        $found = 1;
+        try
+        {
+          $q = "SELECT ".hood_mysql_fields." FROM hoods WHERE id=".$hoodid.";";
+          $rs = db::getInstance()->prepare($q);
+          $rs->execute();
+        }
+        catch(PDOException $e)
+        {
+          exit(showError(500,$e));
+        }
+        $hood = $rs->fetch(PDO::FETCH_ASSOC);
+      }
+
+
+
+    $i++;
+    }
+
+    
+
+    //foreach($points as $key => $point) {
+/*    $point = "$lon $lat";
+     debug("point " . ($key+1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");  
+      if ($pointLocation->pointInPolygon($point, $polygon) == 1) {
+        debug("PolyHood gefunden...");
+        $found = 1;
+        try
+        {  
+          $q = "SELECT ".hood_mysql_fields." FROM hoods WHERE id=".$hoodid.";";
+          $rs = db::getInstance()->prepare($q);
+          $rs->execute();
+        }
+        catch(PDOException $e)
+        {
+          exit(showError(500,$e));
+        }   
+        $hood = $rs->fetch(PDO::FETCH_ASSOC);
+      }
+*/
+
+   // }
+    #danach voronoi wenn keine PolyHood gefunden wurde
+    if($found != 1) {
+      debug("Searching a hood on ".$_GET['lat']." ".$_GET['long'].":");
+      $hood = getHoodByGeo($_GET['lat'],$_GET['long']);
+      $hoodid = $hood['ID'];
+      if (!empty($hood))
+      {
+        debug($hood);
+      }
+    }
+    #am Ende alles cachen wenn die Daten nicht aus dem Cache kamen
+    /*if (!$cache) { 
+      $sql = "INSERT INTO cache(lat,lon,hoodid) VALUES ('$lat','$lon','$hoodid')";
+      try{
+        $rs = db::getInstance()->prepare($sql);
+        $rs->execute ();
+      }
+      catch(PDOException $e) {
+        exit(showError(500,$e));
+      }
+    }*/
+  //}
 }
 
-if (empty($hood))
+if (empty($hood) && found != 0)
 {
   debug("No hood found, using Trainstaion:");
   $hood = getTrainstation();
