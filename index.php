@@ -53,8 +53,9 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
     $i = 1;
     while ($i <= $polyhoodmenge AND $found == 0) {
         try {
-            $sql = 'SELECT * FROM polyhood WHERE polyid=' . $i . '';
+            $sql = 'SELECT * FROM polyhood WHERE polyid=:polyid';
             $rs = db::getInstance()->prepare($sql);
+			$rs->bindParam(':polyid', $i);
             $rs->execute();
         } catch (PDOException $e) {
             exit(showError(500, $e));
@@ -76,8 +77,10 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
             debug("PolyHood gefunden...");
             $found = 1;
             try {
-                $q = "SELECT " . hood_mysql_fields . " FROM hoods WHERE id=" . $hoodid . ";";
+                $q = "SELECT :hood_mysql_fields FROM hoods WHERE id=:hoodid;";
                 $rs = db::getInstance()->prepare($q);
+				$rs->bindParam(':hoodid', $hoodid);
+				$rs->bindParam(':hood_mysql_fields', $hood_mysql_fields);
                 $rs->execute();
             } catch (PDOException $e) {
                 exit(showError(500, $e));
