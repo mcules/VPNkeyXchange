@@ -108,21 +108,17 @@ if (empty($hood) && found != 0) {
 }
 
 $json = array();
-if ($_REQUEST['action'] == "visualize") {
-	$json = getPolyhoods();
-} else {
-    $json['version'] = 1;
-    $json['network'] = array('ula_prefix' => $hood['prefix']);
-    $json['vpn'] = getAllVPNs($hood['ID']);
+$json['version'] = 1;
+$json['network'] = array('ula_prefix' => $hood['prefix']);
+$json['vpn'] = getAllVPNs($hood['ID']);
 
-    $hood['location'] = array('lat' => $hood['lat'], 'lon' => $hood['lon']);
-    unset($hood['lat']);
-    unset($hood['lon']);
+$hood['location'] = array('lat' => $hood['lat'], 'lon' => $hood['lon']);
+unset($hood['lat']);
+unset($hood['lon']);
 
-    unset($hood['ID']);
-    unset($hood['prefix']);
-    $json['hood'] = $hood;
-}
+unset($hood['ID']);
+unset($hood['prefix']);
+$json['hood'] = $hood;
 echo json_encode($json);
 
 // vim: expandtab:sw=2:ts=2

@@ -29,7 +29,7 @@
 			})
 		});
 
-		$.getJSON('index.php?action=visualize', function(data) {
+		$.getJSON('map.php?action=polyhoods', function(data) {
 			$.each(data, function(idx, obj) {
 				var hoodid = idx;
 				var polyCoords = [];
