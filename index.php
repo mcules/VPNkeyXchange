@@ -43,16 +43,13 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
     #zuerst Anzal Polyhoods zählen:
     try {
         $sql = 'SELECT DISTINCT polyid FROM polyhood';
-        $rs = db::getInstance()->prepare($sql);
-        $rs->execute();
+        $rc = db::getInstance()->prepare($sql);
+        $rc->execute();
     } catch (PDOException $e) {
         exit(showError(500, $e));
     }
-    $polyhoodmenge = $rs->rowCount();
     #Abfrage der Polygone ob eins passt
-    debug($polyhoodmenge);
-    $i = 1;
-    while ($i <= $polyhoodmenge AND $found == 0) {
+    while($rc->fetch()) {
         try {
             $sql = 'SELECT * FROM polyhood WHERE polyid=:polyid';
             $rs = db::getInstance()->prepare($sql);
