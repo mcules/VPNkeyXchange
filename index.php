@@ -13,7 +13,7 @@
 
 include("function.php");
 
-const DEBUG = true;
+const DEBUG = false;
 
 const hood_mysql_fields = 'ID,
 name,
@@ -97,7 +97,6 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
     }
 }
 if (empty($hood)) { 
-debug("train");
     debug("No hood found, using Trainstaion:");
     $hood = getTrainstation();
     debug($hood);
