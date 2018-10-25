@@ -68,10 +68,9 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
         if ($rs->rowCount() > 0) {
             while ($result = $rs->fetch(PDO::FETCH_ASSOC)) {
                 $polygeo = ''.$result["lon"].' '.$result["lat"].'';
-		debug($polygeo);
+                debug($polygeo);
                 array_push($polygon, $polygeo);
                 $hoodid = $result['hoodid'];
-                debug("r");
             }
         }
         //foreach($points as $key => $point) {
