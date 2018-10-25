@@ -13,7 +13,7 @@
 
 include("function.php");
 
-const DEBUG = false;
+const DEBUG = true;
 
 const hood_mysql_fields = 'ID,
 name,
@@ -33,14 +33,10 @@ ntp_ip,
 UNIX_TIMESTAMP(changedOn) as timestamp,
 prefix, lat, lon';
 
+$lat = $_GET['lat'];
+$lon = $_GET['long'];
 $hood = array();
-if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "") {
-    $lat = $_GET['lat'];
-    $lon = $_GET['long'];
-    if (!is_numeric($lat) OR !is_numeric($lon)) {
-        echo "nix sqlinject";
-        exit;
-    }
+if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "" && is_numeric($lat) && is_numeric($lon)) {
     #zuerst nach geojson hood prüfen 
     $pointLocation = new pointLocation();
     #zuerst Anzal Polyhoods zählen:
@@ -100,8 +96,8 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
         }
     }
 }
-
-if (empty($hood) && found != 0) {
+if (empty($hood)) { 
+debug("train");
     debug("No hood found, using Trainstaion:");
     $hood = getTrainstation();
     debug($hood);
