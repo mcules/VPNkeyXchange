@@ -224,41 +224,9 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
     if (!is_numeric($lat) OR !is_numeric($lon)) {
         echo "nix sqlinject";
         exit;
-    }/*
-  #als allererstes den Cache abfrage
-  try
-  {
-    $q = "SELECT * FROM cache WHERE lat=".$lat." AND lon = ".$lon.";";
-    $rs = db::getInstance()->prepare($q);
-    $rs->execute();
-  }
-  catch(PDOException $e)
-  {
-    exit(showError(500,$e));
-  }
-  $result = $rs->fetch(PDO::FETCH_ASSOC);
-  if($result['hoodid']) {
-    try
-    {
-      $hoodid = $result['hoodid'];
-      $q = "SELECT ".hood_mysql_fields." FROM hoods WHERE id=".$hoodid.";";
-      $rs = db::getInstance()->prepare($q);
-      $rs->execute();
     }
-    catch(PDOException $e)
-    {
-      exit(showError(500,$e));
-    }
-    $hood = $rs->fetch(PDO::FETCH_ASSOC);
-    $cache=true;
-    debug("Data come from cache");
-  }    
-  if(!$cache) {
-    debug("No data in cache"); */
     #zuerst nach geojson hood prüfen 
     $pointLocation = new pointLocation();
-//    $points = array("$lon $lat");
-
     #zuerst Anzal Polyhoods zählen:
     try {
         $sql = 'SELECT DISTINCT polyid FROM polyhood';
@@ -268,6 +236,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
         exit(showError(500, $e));
     }
     $polyhoodmenge = $rs->rowCount();
+    #Abfrage der Polygone ob eins passt
     debug($polyhoodmenge);
     $i = 1;
     while ($i <= $polyhoodmenge AND $found == 0) {
@@ -289,8 +258,6 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
                 debug("r");
             }
         }
-
-
         //foreach($points as $key => $point) {
         $point = "$lon $lat";
         debug("point " . ($key + 1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");
@@ -306,33 +273,8 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
             }
             $hood = $rs->fetch(PDO::FETCH_ASSOC);
         }
-
-
         $i++;
     }
-
-
-    //foreach($points as $key => $point) {
-    /*    $point = "$lon $lat";
-         debug("point " . ($key+1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");  
-          if ($pointLocation->pointInPolygon($point, $polygon) == 1) {
-            debug("PolyHood gefunden...");
-            $found = 1;
-            try
-            {  
-              $q = "SELECT ".hood_mysql_fields." FROM hoods WHERE id=".$hoodid.";";
-              $rs = db::getInstance()->prepare($q);
-              $rs->execute();
-            }
-            catch(PDOException $e)
-            {
-              exit(showError(500,$e));
-            }   
-            $hood = $rs->fetch(PDO::FETCH_ASSOC);
-          }
-    */
-
-    // }
     #danach voronoi wenn keine PolyHood gefunden wurde
     if ($found != 1) {
         debug("Searching a hood on " . $_GET['lat'] . " " . $_GET['long'] . ":");
@@ -342,18 +284,6 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
             debug($hood);
         }
     }
-    #am Ende alles cachen wenn die Daten nicht aus dem Cache kamen
-    /*if (!$cache) { 
-      $sql = "INSERT INTO cache(lat,lon,hoodid) VALUES ('$lat','$lon','$hoodid')";
-      try{
-        $rs = db::getInstance()->prepare($sql);
-        $rs->execute ();
-      }
-      catch(PDOException $e) {
-        exit(showError(500,$e));
-      }
-    }*/
-    //}
 }
 
 if (empty($hood) && found != 0) {
