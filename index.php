@@ -49,7 +49,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
         exit(showError(500, $e));
     }
     #Abfrage der Polygone ob eins passt
-    while($rc->fetch()) {
+    while($rc->fetch() && $found == 0) {
         try {
             $sql = 'SELECT * FROM polyhood WHERE polyid=:polyid';
             $rs = db::getInstance()->prepare($sql);
