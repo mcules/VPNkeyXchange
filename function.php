@@ -19,7 +19,7 @@ class pointLocation {
  
         // Check if the point sits exactly on a vertex
         if ($this->pointOnVertex == true and $this->pointOnVertex($point, $vertices) == true) {
-            return flse;
+            return false;
         }
  
         // Check if the point is inside the polygon or on the boundary
