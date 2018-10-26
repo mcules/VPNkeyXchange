@@ -194,3 +194,9 @@ ALTER TABLE `polyhood`
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
+--- Updates for productive database
+ALTER TABLE `hoods` ADD INDEX `coords` (`lat`, `lon`);
+ALTER TABLE `gateways` ADD INDEX(`hood_ID`);
+ALTER TABLE `cache` ADD INDEX (`hoodid`);
+ALTER TABLE `cache` ADD INDEX (`lat`, `lon`);
+ALTER TABLE `polyhood` ADD INDEX(`polyid`);
