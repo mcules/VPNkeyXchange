@@ -194,7 +194,7 @@ function getHoodByGeo($lat, $lon)
 
     // load hoods from DB
     try {
-        $q = 'SELECT '.hood_mysql_fields.' FROM hoods;';
+        $q = 'SELECT '.hood_mysql_fields.' FROM hoods WHERE lat IS NOT NULL AND lon IS NOT NULL;';
         $rs = db::getInstance()->prepare($q);
         $rs->execute();
     } catch (PDOException $e) {
@@ -203,13 +203,7 @@ function getHoodByGeo($lat, $lon)
 
     // check for every hood if it's nearer than the hood before
     while ($result = $rs->fetch(PDO::FETCH_ASSOC)) {
-        debug("\n\nhood: " . $result['name']);
-
-        if (is_null($result['lat']) || is_null($result['lon'])) {
-            continue;
-        }
-
-        debug('hoodCenterLat: ' . $result['lat'] . ', hoodCenterLon: ' . $result['lon'] . ', hoodID: ' . $result['ID']);
+        debug("\n\nhood: " . $result['name'] . ', CenterLat: ' . $result['lat'] . ', hoodCenterLon: ' . $result['lon'] . ', hoodID: ' . $result['ID']);
 
         $distance = distance_haversine($result['lat'], $result['lon'], $lat, $lon);
         debug('distance: $distance');
