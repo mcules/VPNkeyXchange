@@ -7,6 +7,7 @@
  * @author Mose <mose@fabfolk.com>
  * @author Christian Dresel <fff@chrisi01.de>
  * @author Dennis Eisold <fff@itstall.de>
+ * @author Adrian Schmutzler <freifunk@adrianschmutzler.de>
  *
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
