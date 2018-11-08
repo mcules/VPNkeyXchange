@@ -22,10 +22,8 @@ const hood_mysql_fields = '
 
 //Quelle: https://gist.github.com/jeremejazz/5219848
 class pointLocation {
-    var $pointOnVertex = true; // Check if the point sits exactly on one of the vertices?
 
     function pointInPolygon($point, $polygon, $pointOnVertex = true) {
-        $this->pointOnVertex = $pointOnVertex;
 
         // Transform string coordinates into arrays with x and y values
         $point = $this->pointStringToCoordinates($point);
@@ -35,7 +33,7 @@ class pointLocation {
         }
 
         // Check if the point sits exactly on a vertex
-        if ($this->pointOnVertex and $this->pointOnVertex($point, $vertices)) {
+        if ($pointOnVertex and $this->pointOnVertex($point, $vertices)) {
             return false;
         }
 
