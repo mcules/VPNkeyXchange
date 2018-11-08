@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `gateways` (
   `ID` int(10) unsigned NOT NULL,
   `name` varchar(50) NOT NULL,
-  `key` char(64) NOT NULL,
+  `publickey` char(64) NOT NULL,
   `ip` char(15) NOT NULL,
   `port` smallint(5) unsigned NOT NULL,
   `hood_ID` int(10) unsigned NOT NULL DEFAULT '1',
@@ -42,7 +42,7 @@ CREATE TABLE `gateways` (
 -- Dumping data for table `gateways`
 --
 
-INSERT INTO `gateways` (`ID`, `name`, `key`, `ip`, `port`, `hood_ID`, `timestamp`) VALUES
+INSERT INTO `gateways` (`ID`, `name`, `publickey`, `ip`, `port`, `hood_ID`, `timestamp`) VALUES
 (2, 'vm3fffgwcd1', '373cf6dca701a8b1516b816a13c91dc9df29ac5a822d12331b503982d655399b', '144.76.70.186', 10007, 0, '2017-09-27 07:15:09'),
 (7, 'fff-nue2-gw2', '07be3d18b703e6e040a6920afb3e226ded6aa474961d8eecbb77b623bdd21059', '81.95.4.187', 10000, 2, '2017-10-28 05:45:51'),
 (8, 'vm3fffgwcd1', '373cf6dca701a8b1516b816a13c91dc9df29ac5a822d12331b503982d655399b', '144.76.70.186', 10006, 1, '2017-09-27 07:15:09'),
@@ -169,3 +169,5 @@ ALTER TABLE `polyhood`
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 --- Updates for productive database
+
+-- ALTER TABLE `hoods` CHANGE `key` `publickey` char(64) NOT NULL;
