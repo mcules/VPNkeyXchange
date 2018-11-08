@@ -20,16 +20,24 @@ const hood_mysql_fields = '
 	prefix, lat, lon
 ';
 
-//Quelle: https://gist.github.com/jeremejazz/5219848
 class pointLocation {
+// Original version: https://gist.github.com/jeremejazz/5219848
+// Modified by Adrian Schmutzler, 2018.
 
     function pointInPolygon($point, $polygon, $pointOnVertex = true) {
 
-        // Transform string coordinates into arrays with x and y values
-        $point = $this->pointStringToCoordinates($point);
+        // Support both string version "lng lat" and array(lng,lat)
+        if(!is_array($point)) {
+            $point = $this->pointStringToCoordinates($point);
+        }
+
         $vertices = array();
         foreach ($polygon as $vertex) {
-            $vertices[] = $this->pointStringToCoordinates($vertex);
+            if(is_array($vertex)) {
+                $vertices[] = $vertex;
+            } else {
+                $vertices[] = $this->pointStringToCoordinates($vertex);
+            }
         }
 
         // Check if the point sits exactly on a vertex
@@ -43,19 +51,19 @@ class pointLocation {
         for ($i=1; $i < count($vertices); $i++) {
             $vertex1 = $vertices[$i-1];
             $vertex2 = $vertices[$i];
-            if ($vertex1['y'] == $vertex2['y'] and $vertex1['y'] == $point['y']
-                and $point['x'] > min($vertex1['x'], $vertex2['x']) and $point['x'] < max($vertex1['x'], $vertex2['x']))
+            if ($vertex1[1] == $vertex2[1] and $vertex1[1] == $point[1]
+                and $point[0] > min($vertex1[0], $vertex2[0]) and $point[0] < max($vertex1[0], $vertex2[0]))
             { // Check if point is on an horizontal polygon boundary
                 return false;
             }
-            if ($point['y'] > min($vertex1['y'], $vertex2['y']) and $point['y'] <= max($vertex1['y'], $vertex2['y'])
-                and $point['x'] <= max($vertex1['x'], $vertex2['x']) and $vertex1['y'] != $vertex2['y'])
+            if ($point[1] > min($vertex1[1], $vertex2[1]) and $point[1] <= max($vertex1[1], $vertex2[1])
+                and $point[0] <= max($vertex1[0], $vertex2[0]) and $vertex1[1] != $vertex2[1])
             {
-                $xinters = ($point['y'] - $vertex1['y']) * ($vertex2['x'] - $vertex1['x']) / ($vertex2['y'] - $vertex1['y']) + $vertex1['x'];
-                if ($xinters == $point['x']) { // Check if point is on the polygon boundary (other than horizontal)
+                $xinters = ($point[1] - $vertex1[1]) * ($vertex2[0] - $vertex1[0]) / ($vertex2[1] - $vertex1[1]) + $vertex1[0];
+                if ($xinters == $point[0]) { // Check if point is on the polygon boundary (other than horizontal)
                     return false;
                 }
-                if ($vertex1['x'] == $vertex2['x'] || $point['x'] <= $xinters) {
+                if ($vertex1[0] == $vertex2[0] || $point[0] <= $xinters) {
                     $intersections++;
                 }
             }
@@ -66,7 +74,7 @@ class pointLocation {
 
     function pointOnVertex($point, $vertices) {
         foreach($vertices as $vertex) {
-            if ($point == $vertex) {
+            if ($point == $vertex) { // works for arrays
                 return true;
             }
         }
@@ -75,7 +83,7 @@ class pointLocation {
 
     function pointStringToCoordinates($pointString) {
         $coordinates = explode(" ", $pointString);
-        return array("x" => $coordinates[0], "y" => $coordinates[1]);
+        return array($coordinates[0],$coordinates[1]);
     }
 
 }

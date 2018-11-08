@@ -45,13 +45,14 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 		// return results in an easily parsable way
 		while ($result = $rs->fetch(PDO::FETCH_ASSOC)) {
 			$polygeo = ''.$result["lon"].' '.$result["lat"].'';
-			debug($polygeo);
-			array_push($polygon, $polygeo);
+			debug('lon: '.$result["lon"].' lat: '.$result["lat"]);
+			array_push($polygon, array($result["lon"],$result["lat"]));
 			$hoodid = $result['hoodid'];
 		}
-		$point = "$lon $lat";
-		debug("point $point: " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");
-		if ($pointLocation->pointInPolygon($point, $polygon)) {
+		$point = array($lon,$lat);
+		$inside = $pointLocation->pointInPolygon($point, $polygon);
+		debug("point $lon $lat: " . $inside . "<br>");
+		if ($inside) {
 			debug("PolyHood gefunden...");
 			try {
 				$rs = db::getInstance()->prepare("SELECT ".hood_mysql_fields." FROM hoods WHERE id=:hoodid;");
