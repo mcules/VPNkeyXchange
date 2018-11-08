@@ -16,7 +16,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `keyxchange`
@@ -29,12 +29,12 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `gateways` (
-  `ID` int(10) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `key` varchar(255) NOT NULL,
-  `ip` varchar(255) NOT NULL,
-  `port` smallint(5) UNSIGNED NOT NULL,
-  `hood_ID` int(10) UNSIGNED NOT NULL DEFAULT '1',
+  `ID` int(10) unsigned NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `key` char(64) NOT NULL,
+  `ip` char(15) NOT NULL,
+  `port` smallint(5) unsigned NOT NULL,
+  `hood_ID` int(10) unsigned NOT NULL DEFAULT '1',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -59,25 +59,25 @@ INSERT INTO `gateways` (`ID`, `name`, `key`, `ip`, `port`, `hood_ID`, `timestamp
 --
 
 CREATE TABLE `hoods` (
-  `ID` int(10) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `net` varchar(255) NOT NULL,
+  `ID` int(10) unsigned NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `net` char(18) NOT NULL,
   `lat` double DEFAULT NULL,
   `lon` double DEFAULT NULL,
-  `prefix` varchar(255) NOT NULL,
-  `ntp_ip` varchar(255) NOT NULL,
+  `prefix` varchar(50) NOT NULL,
+  `ntp_ip` varchar(50) NOT NULL,
   `ESSID_AP` varchar(32) NOT NULL,
   `ESSID_MESH` varchar(32) NOT NULL,
   `BSSID_MESH` varchar(17) NOT NULL,
   `mesh_id` varchar(32) NOT NULL,
   `protocol` varchar(50) NOT NULL DEFAULT 'batman-adv-v15',
-  `channel2` int(11) NOT NULL DEFAULT '13',
-  `mode2` varchar(30) NOT NULL DEFAULT 'ht20',
-  `mesh_type2` varchar(30) NOT NULL DEFAULT '802.11s',
-  `channel5` int(11) NOT NULL DEFAULT '40',
-  `mode5` varchar(30) NOT NULL DEFAULT 'ht20',
-  `mesh_type5` varchar(30) NOT NULL DEFAULT '802.11s',
-  `upgrade_path` varchar(255) NOT NULL,
+  `channel2` tinyint(3) unsigned NOT NULL DEFAULT '13',
+  `mode2` char(4) NOT NULL DEFAULT 'ht20',
+  `mesh_type2` varchar(10) NOT NULL DEFAULT '802.11s',
+  `channel5` tinyint(3) unsigned NOT NULL DEFAULT '40',
+  `mode5` char(5) NOT NULL DEFAULT 'ht20',
+  `mesh_type5` varchar(10) NOT NULL DEFAULT '802.11s',
+  `upgrade_path` varchar(50) NOT NULL,
   `changedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -133,15 +133,14 @@ INSERT INTO `polyhood` (`id`, `polyid`, `lat`, `lon`, `hoodid`) VALUES
 -- Indexes for table `gateways`
 --
 ALTER TABLE `gateways`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `ID` (`ID`);
+ ADD PRIMARY KEY (`ID`),
+ ADD KEY `hood_ID` (`hood_ID`);
 
 --
 -- Indexes for table `hoods`
 --
 ALTER TABLE `hoods`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`);
+ ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `polyhood`
@@ -157,7 +156,7 @@ ALTER TABLE `polyhood`
 -- AUTO_INCREMENT for table `gateways`
 --
 ALTER TABLE `gateways`
-  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `ID` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `polyhood`
 --
@@ -169,5 +168,3 @@ ALTER TABLE `polyhood`
 
 --- Updates for productive database
 ALTER TABLE `hoods` ADD INDEX `coords` (`lat`, `lon`);
-ALTER TABLE `gateways` ADD INDEX(`hood_ID`);
-ALTER TABLE `polyhood` ADD INDEX(`polyid`);
