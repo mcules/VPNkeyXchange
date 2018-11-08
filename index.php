@@ -11,7 +11,7 @@
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
 
-include("function.php");
+require "function.php";
 
 const DEBUG = false;
 
