@@ -99,31 +99,31 @@ INSERT INTO `hoods` (`ID`, `name`, `net`, `lat`, `lon`, `prefix`, `ntp_ip`, `ESS
 --
 
 CREATE TABLE `polyhood` (
-  `id` int(10) NOT NULL,
-  `polyid` int(10) NOT NULL,
-  `lat` varchar(50) NOT NULL,
-  `lon` varchar(50) NOT NULL,
-  `hoodid` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `ID` int(10) unsigned NOT NULL,
+  `polyid` int(10) unsigned NOT NULL,
+  `lat` double NOT NULL,
+  `lon` double NOT NULL,
+  `hoodid` int(10) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `polyhood`
 --
 
-INSERT INTO `polyhood` (`id`, `polyid`, `lat`, `lon`, `hoodid`) VALUES
-(18, 1, '49.58982152', '10.99503994', 31),
-(19, 1, '49.58940422', '11.01199150', 31),
-(20, 1, '49.59685950', '11.01787090', 31),
-(21, 1, '49.60270052', '11.01722717', 31),
-(22, 1, '49.60712255', '10.99988937', 31),
-(23, 1, '49.58982152', '10.99503994', 31),
-(24, 2, '49.46979740', '11.01302147', 32),
-(25, 2, '49.47983623', '10.99259377', 32),
-(26, 2, '49.48569126', '10.98083496', 32),
-(27, 2, '49.45546063', '10.97740173', 32),
-(28, 2, '49.44798376', '10.99851608', 32),
-(29, 2, '49.45395418', '11.00915909', 32),
-(30, 2, '49.46979740', '11.01302147', 32);
+INSERT INTO `polyhood` (`ID`, `polyid`, `lat`, `lon`, `hoodid`) VALUES
+(18, 1, 49.58982152, 10.99503994, 31),
+(19, 1, 49.58940422, 11.01199150, 31),
+(20, 1, 49.59685950, 11.01787090, 31),
+(21, 1, 49.60270052, 11.01722717, 31),
+(22, 1, 49.60712255, 10.99988937, 31),
+(23, 1, 49.58982152, 10.99503994, 31),
+(24, 2, 49.46979740, 11.01302147, 32),
+(25, 2, 49.47983623, 10.99259377, 32),
+(26, 2, 49.48569126, 10.98083496, 32),
+(27, 2, 49.45546063, 10.97740173, 32),
+(28, 2, 49.44798376, 10.99851608, 32),
+(29, 2, 49.45395418, 11.00915909, 32),
+(30, 2, 49.46979740, 11.01302147, 32);
 
 --
 -- Indexes for dumped tables
@@ -146,7 +146,8 @@ ALTER TABLE `hoods`
 -- Indexes for table `polyhood`
 --
 ALTER TABLE `polyhood`
-  ADD PRIMARY KEY (`id`);
+ ADD PRIMARY KEY (`ID`),
+ ADD KEY `polyid` (`polyid`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -161,10 +162,12 @@ ALTER TABLE `gateways`
 -- AUTO_INCREMENT for table `polyhood`
 --
 ALTER TABLE `polyhood`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 --- Updates for productive database
+
 ALTER TABLE `hoods` ADD INDEX `coords` (`lat`, `lon`);
