@@ -52,7 +52,6 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 		debug("point " . ($key + 1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");
 		if ($pointLocation->pointInPolygon($point, $polygon)) {
 			debug("PolyHood gefunden...");
-			$found = 1;
 			try {
 				$rs = db::getInstance()->prepare("SELECT ".hood_mysql_fields." FROM hoods WHERE id=:hoodid;");
 				$rs->bindParam(':hoodid', $hoodid, PDO::PARAM_INT);
@@ -65,7 +64,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 		}
 	}
 	// danach voronoi wenn keine PolyHood gefunden wurde
-	if (!$found) {
+	if (empty($hood)) {
 		debug("Searching a hood on " . $lat . " " . $lon . ":");
 		$hood = getHoodByGeo($lat, $lon);
 		$hoodid = $hood['ID'];
