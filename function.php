@@ -259,17 +259,21 @@ function getAllVPNs($hoodId)
 
 function getPolyhoods()
 {
-	try {
-        $rs = db::getInstance()->query("SELECT * FROM polyhood;");
+    try {
+        $rs = db::getInstance()->query("SELECT polyid, lat, lon, hoodid FROM polyhood;");
         $rs->execute();
     } catch (PDOException $e) {
         exit(showError(500, $e));
     }
-	$result = $rs->fetchall(PDO::FETCH_ASSOC);
-	foreach($result as $row) {
-		$return[$row['hoodid']][] = array('lat' => $row['lat'], 'lon' => $row['lon']);
-	}
-	return $return;
+    $result = $rs->fetchall(PDO::FETCH_ASSOC);
+    $return = array();
+    foreach($result as $row) {
+        if(!isset($return[$row['hoodid']])) {
+            $return[$row['hoodid']] = array();
+        }
+        $return[$row['hoodid']][] = array('polygon' => $row['polyid'], 'lat' => $row['lat'], 'lon' => $row['lon']);
+    }
+    return $return;
 }
 
 ?>
