@@ -49,7 +49,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			$hoodid = $result['hoodid'];
 		}
 		$point = "$lon $lat";
-		debug("point " . ($key + 1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");
+		debug("point $point: " . $pointLocation->pointInPolygon($point, $polygon) . "<br>");
 		if ($pointLocation->pointInPolygon($point, $polygon)) {
 			debug("PolyHood gefunden...");
 			try {
