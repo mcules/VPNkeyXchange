@@ -37,7 +37,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 	// Abfrage der Polygone ob eins passt
 	foreach($allpoly as $row) {
 		try {
-			$rs = db::getInstance()->prepare("SELECT * FROM polyhood WHERE polyid=:polyid");
+			$rs = db::getInstance()->prepare("SELECT lat, lon, hoodid FROM polyhood WHERE polyid=:polyid");
 			$rs->bindParam(':polyid', $row['polyid']);
 			$rs->execute();
 		} catch (PDOException $e) {
