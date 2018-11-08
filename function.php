@@ -167,17 +167,16 @@ const EARTH_RADIUS = 6371;
  */
 function distance_haversine($lat1, $lon1, $lat2, $lon2)
 {
-    $delta_lat = $lat1 - $lat2;
-    $delta_lon = $lon1 - $lon2;
-    $alpha = $delta_lat / 2;
-    $sin_alpha_2 = sin_d($alpha) * sin_d($alpha);
-    $beta = $delta_lon / 2;
-    $sin_beta_2 = sin_d($beta) * sin_d($beta);
-    $a = $sin_alpha_2 + cos_d($lat1) * cos_d($lat2) * $sin_beta_2;
+    $alpha = ($lat1 - $lat2) * 0.5;
+    $beta = ($lon1 - $lon2) * 0.5;
+    $sin_alpha = sin_d($alpha);
+    $sin_beta = sin_d($beta);
+
+    $a = $sin_alpha * $sin_alpha + cos_d($lat1) * cos_d($lat2) * $sin_beta * $sin_beta;
     $c = asin(min(1, sqrt($a)));
     $distance = 2 * EARTH_RADIUS * $c;
-    $distance = round($distance, 3);
-    return $distance;
+
+    return round($distance, 3);
 }
 
 /**
