@@ -23,7 +23,8 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 	
 	#zuerst nach geojson hood prüfen 
 	$pointLocation = new pointLocation();
-	#zuerst Anzal Polyhoods zählen:
+	
+	// First only retrieve list of polyids
 	try {
 		$rc = db::getInstance()->prepare("SELECT DISTINCT polyid FROM polyhood");
 		$rc->execute();
@@ -41,7 +42,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			exit(showError(500, $e));
 		}
 		$polygon = array();
-		// return results in a easy parsable way
+		// return results in an easily parsable way
 		while ($result = $rs->fetch(PDO::FETCH_ASSOC)) {
 			$polygeo = ''.$result["lon"].' '.$result["lat"].'';
 			debug($polygeo);
