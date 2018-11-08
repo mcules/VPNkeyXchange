@@ -1,5 +1,25 @@
 <?php
 
+const hood_mysql_fields = '
+	ID,
+	name,
+	ESSID_AP as essid,
+	BSSID_MESH as mesh_bssid,
+	ESSID_MESH as mesh_essid,
+	mesh_id,
+	protocol,
+	channel2,
+	mode2,
+	mesh_type2,
+	channel5,
+	mode5,
+	mesh_type5,
+	upgrade_path,
+	ntp_ip,
+	UNIX_TIMESTAMP(changedOn) as timestamp,
+	prefix, lat, lon
+';
+
 //Quelle: https://gist.github.com/jeremejazz/5219848
 class pointLocation {
     var $pointOnVertex = true; // Check if the point sits exactly on one of the vertices?
@@ -172,7 +192,7 @@ function getHoodByGeo($lat, $lon)
 
     // load hoods from DB
     try {
-        $q = 'SELECT * FROM hoods;';
+        $q = 'SELECT '.hood_mysql_fields.' FROM hoods;';
         $rs = db::getInstance()->prepare($q);
         $rs->execute();
     } catch (PDOException $e) {
@@ -205,7 +225,7 @@ function getHoodByGeo($lat, $lon)
 function getTrainstation()
 {
     try {
-        $q = 'SELECT * FROM hoods WHERE ID="0";';
+        $q = 'SELECT '.hood_mysql_fields.' FROM hoods WHERE ID="0";';
         $rs = db::getInstance()->prepare($q);
         $rs->execute();
     } catch (PDOException $e) {

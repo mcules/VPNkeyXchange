@@ -54,7 +54,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			debug("PolyHood gefunden...");
 			$found = 1;
 			try {
-				$rs = db::getInstance()->prepare("SELECT * FROM hoods WHERE id=:hoodid;");
+				$rs = db::getInstance()->prepare("SELECT ".hood_mysql_fields." FROM hoods WHERE id=:hoodid;");
 				$rs->bindParam(':hoodid', $hoodid, PDO::PARAM_INT);
 				$rs->execute();
 			} catch (PDOException $e) {
