@@ -213,7 +213,7 @@ function getHoodByGeo($lat, $lon)
         debug('distance: $distance');
 
         if ($distance <= $current_hood_dist) {
-            debug('Node belongs to Hood ' . $result['ID'] . '(' . $result['name'] . ')');
+            debug('Shorter distance found for hood ' . $result['ID'] . '(' . $result['name'] . ')');
             $current_hood_dist = $distance;
             $best_result = $result;
         }
