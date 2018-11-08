@@ -27,7 +27,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 
 	// First only retrieve list of polyids
 	try {
-		$rc = db::getInstance()->prepare("SELECT DISTINCT polyid FROM polyhood");
+		$rc = db::getInstance()->prepare("SELECT DISTINCT polyid, hoodid FROM polyhood");
 		$rc->execute();
 	} catch (PDOException $e) {
 		exit(showError(500, $e));
@@ -37,7 +37,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 	// Abfrage der Polygone ob eins passt
 	foreach($allpoly as $row) {
 		try {
-			$rs = db::getInstance()->prepare("SELECT lat, lon, hoodid FROM polyhood WHERE polyid=:polyid");
+			$rs = db::getInstance()->prepare("SELECT lat, lon FROM polyhood WHERE polyid=:polyid");
 			$rs->bindParam(':polyid', $row['polyid']);
 			$rs->execute();
 		} catch (PDOException $e) {
@@ -49,7 +49,6 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 		while ($polygeo = $rs->fetch(PDO::FETCH_ASSOC)) {
 			debug('lon: '.$polygeo["lon"].' lat: '.$polygeo["lat"]);
 			array_push($polygons, array($polygeo["lon"],$polygeo["lat"]));
-			$hoodid = $polygeo['hoodid']; // has to be inside loop as it is not sure whether $polygeo exists outside
 		}
 
 		$point = array($lon,$lat); // coordinates of router
@@ -59,7 +58,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			debug("PolyHood gefunden...");
 			try {
 				$rs = db::getInstance()->prepare("SELECT ".hood_mysql_fields." FROM hoods WHERE id=:hoodid;");
-				$rs->bindParam(':hoodid', $hoodid, PDO::PARAM_INT);
+				$rs->bindParam(':hoodid', $row['hoodid'], PDO::PARAM_INT);
 				$rs->execute();
 			} catch (PDOException $e) {
 				exit(showError(500, $e));
