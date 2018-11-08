@@ -15,11 +15,12 @@ require "function.php";
 
 const DEBUG = false;
 
-$lat = $_GET['lat'];
-$lon = $_GET['long'];
 $hood = array();
 
-if (isset($lat) && $lat !== "" && isset($lon) && $lon !== "" && is_numeric($lat) && is_numeric($lon)) {
+if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "" && is_numeric($_GET['lat']) && is_numeric($_GET['long'])) {
+	$lat = $_GET['lat'];
+	$lon = $_GET['long'];
+	
 	#zuerst nach geojson hood prüfen 
 	$pointLocation = new pointLocation();
 	#zuerst Anzal Polyhoods zählen:
