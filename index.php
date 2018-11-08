@@ -68,7 +68,6 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 	if (empty($hood)) {
 		debug("Searching a hood on " . $lat . " " . $lon . ":");
 		$hood = getHoodByGeo($lat, $lon);
-		$hoodid = $hood['ID'];
 		if (!empty($hood)) {
 			debug($hood);
 		}
