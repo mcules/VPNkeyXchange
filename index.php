@@ -21,10 +21,10 @@ $hood = array();
 if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "" && is_numeric($_GET['lat']) && is_numeric($_GET['long'])) {
 	$lat = $_GET['lat'];
 	$lon = $_GET['long'];
-	
-	#zuerst nach geojson hood prüfen 
+
+	// Zuerst nach geojson hood pruefen
 	$pointLocation = new pointLocation();
-	
+
 	// First only retrieve list of polyids
 	try {
 		$rc = db::getInstance()->prepare("SELECT DISTINCT polyid FROM polyhood");
@@ -32,9 +32,10 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 	} catch (PDOException $e) {
 		exit(showError(500, $e));
 	}
-	$result = $rc->fetchAll();
+	$allpoly = $rc->fetchAll(); // list of polyids
+
 	// Abfrage der Polygone ob eins passt
-	foreach($result as $row) {
+	foreach($allpoly as $row) {
 		try {
 			$rs = db::getInstance()->prepare("SELECT * FROM polyhood WHERE polyid=:polyid");
 			$rs->bindParam(':polyid', $row['polyid']);
@@ -42,16 +43,17 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 		} catch (PDOException $e) {
 			exit(showError(500, $e));
 		}
-		$polygon = array();
-		// return results in an easily parsable way
-		while ($result = $rs->fetch(PDO::FETCH_ASSOC)) {
-			$polygeo = ''.$result["lon"].' '.$result["lat"].'';
-			debug('lon: '.$result["lon"].' lat: '.$result["lat"]);
-			array_push($polygon, array($result["lon"],$result["lat"]));
-			$hoodid = $result['hoodid'];
+
+		// create array of polygons
+		$polygons = array(); // list of polygons (array(lng,lat)) for the current polyid
+		while ($polygeo = $rs->fetch(PDO::FETCH_ASSOC)) {
+			debug('lon: '.$polygeo["lon"].' lat: '.$polygeo["lat"]);
+			array_push($polygons, array($polygeo["lon"],$polygeo["lat"]));
+			$hoodid = $polygeo['hoodid']; // has to be inside loop as it is not sure whether $polygeo exists outside
 		}
-		$point = array($lon,$lat);
-		$inside = $pointLocation->pointInPolygon($point, $polygon);
+
+		$point = array($lon,$lat); // coordinates of router
+		$inside = $pointLocation->pointInPolygon($point, $polygons);
 		debug("point $lon $lat: " . $inside . "<br>");
 		if ($inside) {
 			debug("PolyHood gefunden...");
@@ -66,6 +68,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			break;
 		}
 	}
+
 	// danach voronoi wenn keine PolyHood gefunden wurde
 	if (empty($hood)) {
 		debug("Searching a hood on " . $lat . " " . $lon . ":");
@@ -75,6 +78,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 		}
 	}
 }
+
 if (empty($hood)) { 
 	debug("No hood found, using Trainstaion:");
 	$hood = getTrainstation();
