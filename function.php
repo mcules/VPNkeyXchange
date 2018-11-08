@@ -243,8 +243,8 @@ function getAllVPNs($hoodId)
 
     // return all gateways in the hood
     try {
-        $sql = 'SELECT g.name, "fastd" AS protocol, g.ip AS address, g.port, g.publickey AS "key"
-            FROM gateways AS g WHERE hood_ID=:hood;';
+        $sql = "SELECT g.name, 'fastd' AS protocol, g.ip AS address, g.port, g.publickey AS 'key'
+            FROM gateways AS g WHERE hood_ID=:hood;";
         $rs = db::getInstance()->prepare($sql);
         $rs->bindParam(':hood', $hoodId);
         $rs->execute();
