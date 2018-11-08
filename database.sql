@@ -169,5 +169,3 @@ ALTER TABLE `polyhood`
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 --- Updates for productive database
-
-ALTER TABLE `hoods` ADD INDEX `coords` (`lat`, `lon`);
