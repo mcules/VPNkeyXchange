@@ -239,7 +239,7 @@ function getAllVPNs($hoodId)
 {
     $ret = array();
 
-    // return either all all gateways from the hood
+    // return all gateways in the hood
     try {
         $sql = 'SELECT g.name, "fastd" AS protocol, g.ip AS address, g.port, g.key
             FROM gateways AS g WHERE hood_ID=:hood;';
