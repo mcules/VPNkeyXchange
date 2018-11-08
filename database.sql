@@ -25,33 +25,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cache`
---
-
-CREATE TABLE `cache` (
-  `lat` double NOT NULL,
-  `lon` double NOT NULL,
-  `hoodid` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `cache`
---
-
-INSERT INTO `cache` (`lat`, `lon`, `hoodid`) VALUES
-(49.618443, 11.327268, 31),
-(49.618443, 11.327269, 31),
-(49.618443, 11.327265, 31),
-(49.618443, 11.327267, 31),
-(49.618443, 10.327267, 14),
-(49.618443, 11.32726, 31),
-(49.618443, 11.3272, 31),
-(49.618443, 11.5272, 22),
-(49.618443, 11.52726, 22);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `gateways`
 --
 
@@ -197,6 +170,4 @@ ALTER TABLE `polyhood`
 --- Updates for productive database
 ALTER TABLE `hoods` ADD INDEX `coords` (`lat`, `lon`);
 ALTER TABLE `gateways` ADD INDEX(`hood_ID`);
-ALTER TABLE `cache` ADD INDEX (`hoodid`);
-ALTER TABLE `cache` ADD INDEX (`lat`, `lon`);
 ALTER TABLE `polyhood` ADD INDEX(`polyid`);
