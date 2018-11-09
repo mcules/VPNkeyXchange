@@ -55,7 +55,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 
 	// Write polygon coordinates into array
 	while($row = $rc->fetch(PDO::FETCH_ASSOC)) {
-		if(!isset($polystore[$row['polyid'])) {
+		if(!isset($polystore[$row['polyid']])) {
 			debug('Database inconsistent: No polyhood defined for ID '.$row['polyid']);
 			continue; // Skip those orphaned vertex entries
 		}
