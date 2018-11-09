@@ -21,44 +21,38 @@ $hood = array();
 if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "" && is_numeric($_GET['lat']) && is_numeric($_GET['long'])) {
 	$lat = $_GET['lat'];
 	$lon = $_GET['long'];
+	$point = array($lon,$lat); // coordinates of router
 
 	// Zuerst nach geojson hood pruefen
 	$pointLocation = new pointLocation();
 
 	// First only retrieve list of polyids
 	try {
-		$rc = db::getInstance()->prepare("SELECT DISTINCT polyid, hoodid FROM polyhood");
+		$rc = db::getInstance()->prepare("SELECT polyid, hoodid, lat, lon FROM polyhood");
 		$rc->execute();
 	} catch (PDOException $e) {
 		exit(showError(500, $e));
 	}
-	$allpoly = $rc->fetchAll(); // list of polyids
 
-	// Abfrage der Polygone ob eins passt
-	foreach($allpoly as $row) {
-		try {
-			$rs = db::getInstance()->prepare("SELECT lat, lon FROM polyhood WHERE polyid=:polyid");
-			$rs->bindParam(':polyid', $row['polyid']);
-			$rs->execute();
-		} catch (PDOException $e) {
-			exit(showError(500, $e));
+	// Write polygon data into array
+	$polystore = array();
+	while($row = $rc->fetch(PDO::FETCH_ASSOC)) {
+		if(!isset($polystore[$row['polyid'])) {
+			$polystore[$row['polyid']] = array('hoodid'=>$row['hoodid'],'data'=>array());
 		}
+		$polystore[$row['polyid']]['data'][] = array($row["lon"],$row["lat"]);
+		debug('lon: '.$row["lon"].' lat: '.$row["lat"]);
+	}
 
-		// create array of polygons
-		$polygons = array(); // list of polygons (array(lng,lat)) for the current polyid
-		while ($polygeo = $rs->fetch(PDO::FETCH_ASSOC)) {
-			debug('lon: '.$polygeo["lon"].' lat: '.$polygeo["lat"]);
-			array_push($polygons, array($polygeo["lon"],$polygeo["lat"]));
-		}
-
-		$point = array($lon,$lat); // coordinates of router
-		$inside = $pointLocation->pointInPolygon($point, $polygons);
-		debug("point $lon $lat: " . $inside . "<br>");
+	// Interpret polygon data
+	foreach($polystore as $polyid => $polygon) {
+		$inside = $pointLocation->pointInPolygon($point, $polygon['data']);
+		debug("point in polygon #" . $polyid. ": " . $inside . "<br>");
 		if ($inside) {
 			debug("PolyHood gefunden...");
 			try {
 				$rs = db::getInstance()->prepare("SELECT ".hood_mysql_fields." FROM hoods WHERE id=:hoodid;");
-				$rs->bindParam(':hoodid', $row['hoodid'], PDO::PARAM_INT);
+				$rs->bindParam(':hoodid', $polygon['hoodid'], PDO::PARAM_INT);
 				$rs->execute();
 			} catch (PDOException $e) {
 				exit(showError(500, $e));
