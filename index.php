@@ -28,26 +28,52 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 
 	// First only retrieve list of polyids
 	try {
-		$rc = db::getInstance()->prepare("SELECT polyid, hoodid, lat, lon FROM polyhood");
+		$rc = db::getInstance()->prepare("
+			SELECT polyhoods.polyid, hoodid, MIN(lat) AS minlat, MIN(lon) AS minlon, MAX(lat) AS maxlat, MAX(lon) AS maxlon
+			FROM polyhoods INNER JOIN polygons ON polyhoods.polyid = polygons.polyid
+			GROUP BY polyid, hoodid
+		"); // This query will automatically exclude polyhoods being present in polyhoods table, but without vertices in polygons table
 		$rc->execute();
 	} catch (PDOException $e) {
 		exit(showError(500, $e));
 	}
 
-	// Write polygon data into array
+	// Set up all polygons, but do it without vertex coordinates
 	$polystore = array();
 	while($row = $rc->fetch(PDO::FETCH_ASSOC)) {
+		$polystore[$row['polyid']] = $row;
+		$polystore[$row['polyid']]['data'] = array(); // prepare array for vertex coordinates
+	}
+
+	// Now query the coordinates, all in one query
+	try {
+		$rc = db::getInstance()->prepare("SELECT polyid, lat, lon FROM polygons");
+		$rc->execute();
+	} catch (PDOException $e) {
+		exit(showError(500, $e));
+	}
+
+	// Write polygon coordinates into array
+	while($row = $rc->fetch(PDO::FETCH_ASSOC)) {
 		if(!isset($polystore[$row['polyid'])) {
-			$polystore[$row['polyid']] = array('hoodid'=>$row['hoodid'],'data'=>array());
+			debug('Database inconsistent: No polyhood defined for ID '.$row['polyid']);
+			continue; // Skip those orphaned vertex entries
 		}
 		$polystore[$row['polyid']]['data'][] = array($row["lon"],$row["lat"]);
 		debug('lon: '.$row["lon"].' lat: '.$row["lat"]);
 	}
 
 	// Interpret polygon data
-	foreach($polystore as $polyid => $polygon) {
+	foreach($polystore as $polygon) {
+		// First check whether point coordinates are outside the most extreme values for lat/lng
+		$exclude = $pointLocation->excludePolygon($point, $polygon['minlon'], $polygon['maxlon'], $polygon['minlat'], $polygon['maxlat']);
+		if ($exclude) {
+			debug("polygon #" . $polygon['polyid'] . " excluded<br>");
+			continue;
+		}
+		// Now really check whether point is inside polygon
 		$inside = $pointLocation->pointInPolygon($point, $polygon['data']);
-		debug("point in polygon #" . $polyid. ": " . $inside . "<br>");
+		debug("point in polygon #" . $polygon['polyid'] . ": " . $inside . "<br>");
 		if ($inside) {
 			debug("PolyHood gefunden...");
 			try {

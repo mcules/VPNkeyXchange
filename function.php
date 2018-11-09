@@ -24,6 +24,14 @@ class pointLocation {
 // Original version: https://gist.github.com/jeremejazz/5219848
 // Modified by Adrian Schmutzler, 2018.
 
+    function excludePolygon($point, $minlon, $maxlon, $minlat, $maxlat) {
+        // exclude polygon if LAT/LNG of point is smaller than minimum lat/lng of all vertices
+        // or bigger than maximum ...
+
+        // returning TRUE means exclusion, so polygon should NOT be used
+        return ($point[0] < $minlon or $point[0] > $maxlon or $point[1] < $minlat or $point[1] > $maxlat);
+    }
+
     function pointInPolygon($point, $polygon, $pointOnVertex = true) {
 
         // Support both string version "lng lat" and array(lng,lat)
