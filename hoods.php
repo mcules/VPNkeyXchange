@@ -1,12 +1,15 @@
 <?php
+
+require "function.php";
+
+$polydata = getPolyhoodsByHood(); // read polygon data for later use
+
 try {
-	require ("config.inc.php");
-	$db = new PDO("mysql:host=$mysql_server;dbname=$mysql_db;charset=utf8mb4", $mysql_user, $mysql_pass);
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$rs = $db->prepare ( "SELECT * FROM `hoods`" );
-	$rs->execute ();
-} catch ( PDOException $e ) {
-	exit($e);
+	$q = 'SELECT ID, name, net, lat, lon FROM hoods;';
+	$rs = db::getInstance()->prepare($q);
+	$rs->execute();
+} catch (PDOException $e) {
+	exit(showError(500, $e));
 }
 
 $hoods = array();
@@ -20,9 +23,13 @@ while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 		$hood['lat'] = floatval($result['lat']);
 		$hood['lon'] = floatval($result['lon']);
 	}
+	if(isset($polydata[$result['ID']])) {
+		$hood['polygons'] = array_values($polydata[$result['ID']]); // we don't need the polyids here
+	}
 	array_push($hoods, $hood);
 }
 
 header("Content-Type: application/json");
 echo json_encode($hoods, JSON_PRETTY_PRINT);
+
 ?>

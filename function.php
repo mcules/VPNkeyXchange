@@ -277,4 +277,32 @@ function getPolyhoods()
     return $return;
 }
 
+function getPolyhoodsByHood()
+{
+    try {
+        $rs = db::getInstance()->query("
+            SELECT polyhoods.polyid, lat, lon, hoodid
+            FROM polyhoods INNER JOIN polygons ON polyhoods.polyid = polygons.polyid
+            ORDER BY hoodid ASC, polyid ASC, ID ASC;
+        ");
+        $rs->execute();
+    } catch (PDOException $e) {
+        exit(showError(500, $e));
+    }
+    $result = $rs->fetchall(PDO::FETCH_ASSOC);
+    $return = array();
+    foreach($result as $row) {
+        // one array of polygons per hood
+        if(!isset($return[$row['hoodid']])) {
+            $return[$row['hoodid']] = array();
+        }
+        // one array of vertices per polygon
+        if(!isset($return[$row['hoodid']][$row['polyid']])) {
+            $return[$row['hoodid']][$row['polyid']] = array();
+        }
+        $return[$row['hoodid']][$row['polyid']][] = array('lat' => floatval($row['lat']), 'lon' => floatval($row['lon']));
+    }
+    return $return;
+}
+
 ?>
