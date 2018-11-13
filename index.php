@@ -59,7 +59,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			debug('Database inconsistent: No polyhood defined for ID '.$row['polyid']);
 			continue; // Skip those orphaned vertex entries
 		}
-		$polystore[$row['polyid']]['data'][] = array($row["lon"],$row["lat"]);
+		$polystore[$row['polyid']]['data'][] = array(floatval($row["lon"]),floatval($row["lat"]));
 		debug('lon: '.$row["lon"].' lat: '.$row["lat"]);
 	}
 
