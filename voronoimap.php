@@ -1,12 +1,13 @@
 <?php
+
+require "function.php";
+
 try {
-	require ("config.inc.php");
-	$db = new PDO("mysql:host=$mysql_server;dbname=$mysql_db;charset=utf8mb4", $mysql_user, $mysql_pass);
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$rs = $db->prepare ( "SELECT * FROM `hoods`" );
-	$rs->execute ();
-} catch ( PDOException $e ) {
-	exit($e);
+	$q = 'SELECT ID, name, lat, lon FROM hoods;';
+	$rs = db::getInstance()->prepare($q);
+	$rs->execute();
+} catch (PDOException $e) {
+	exit(showError(500, $e));
 }
 
 $hoods = array();
@@ -33,7 +34,8 @@ array_multisort($hoodssort, SORT_ASC, $hoods);
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+
 <style>
 body {
 	margin: 0;
@@ -228,7 +230,7 @@ p {
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 	
 	<script>
 	showHide = function(selector) {
@@ -406,7 +408,7 @@ p {
 		map.addLayer(mapLayer);
 	}
 	</script>
-	
+
 	<script>
 	var map = L.map('map').setView([49.47508, 10.99273], 18);
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
