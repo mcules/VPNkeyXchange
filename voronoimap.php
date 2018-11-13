@@ -24,7 +24,7 @@ while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 		array_push($hoodssort,$result['name']);
 	}
 }
-array_multisort($hoodssort, SORT_ASC, $hoods);
+array_multisort($hoodssort, SORT_ASC,SORT_NATURAL|SORT_FLAG_CASE, $hoods);
 
 ?>
 
