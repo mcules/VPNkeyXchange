@@ -47,7 +47,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 
 	// Now query the coordinates, all in one query
 	try {
-		$rc = db::getInstance()->prepare("SELECT polyid, lat, lon FROM polygons");
+		$rc = db::getInstance()->prepare("SELECT polyid, lat, lon FROM polygons ORDER BY ID ASC");
 		$rc->execute();
 	} catch (PDOException $e) {
 		exit(showError(500, $e));
