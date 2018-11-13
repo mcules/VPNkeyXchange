@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/css/ol.css" type="text/css">
-    <style>
-      .map {
-        height: 1000px;
-        width: 100%;
-      }
-    </style>
-    <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/build/ol.js"></script>
-	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <title>KeyExchangeV2 Hoods</title>
-  </head>
-  <body>
-    <h2>KeyExchangeV2 Hoods</h2>
-    <div id="map" class="map"></div>
-    <script type="text/javascript">
+<head>
+	<link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/css/ol.css" type="text/css">
+	<style>
+	.map {
+		height: 1000px;
+		width: 100%;
+	}
+	</style>
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/build/ol.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<title>KeyExchangeV2 Hoods</title>
+</head>
+<body>
+	<h2>KeyExchangeV2 Hoods</h2>
+	<div id="map" class="map"></div>
+	<script type="text/javascript">
 		var map = new ol.Map({
 			target: 'map',
 			layers: [
@@ -29,26 +29,32 @@
 			})
 		});
 
-		$.getJSON('map.php?action=polyhoods', function(data) {
+		$.getJSON('hoods.php', function(data) {
 			$.each(data, function(idx, obj) {
-				var hoodid = idx;
-				var polyCoords = [];
-				$.each(obj, function(idx, obj) {
-					polyCoords.push(ol.proj.transform([parseFloat(obj.lon), parseFloat(obj.lat)], 'EPSG:4326', 'EPSG:3857'));
-				});
+				if(!('polygons' in obj)) {
+					return true; // continue
+				}
+				var hoodid = obj.id;
+				// At the moment, we add one layer PER POLYGON, not per hood. This should be improved at some point
+				$.each(obj.polygons, function(polyid, polygon) {
+					var polyCoords = [];
+					$.each(polygon, function(vertid, vertex) {
+						polyCoords.push(ol.proj.transform([vertex.lon, vertex.lat], 'EPSG:4326', 'EPSG:3857'));
+					});
 
-				var feature = new ol.Feature({
-					geometry: new ol.geom.Polygon([polyCoords])
-				})
-
-				var layer = new ol.layer.Vector({
-					source: new ol.source.Vector({
-						features: [feature]
+					var feature = new ol.Feature({
+						geometry: new ol.geom.Polygon([polyCoords])
 					})
+
+					var layer = new ol.layer.Vector({
+						source: new ol.source.Vector({
+							features: [feature]
+						})
+					});
+					map.addLayer(layer);
 				});
-				map.addLayer(layer);
 			});
 		});
-    </script>
-  </body>
+	</script>
+</body>
 </html>
