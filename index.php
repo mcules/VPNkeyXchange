@@ -72,6 +72,7 @@ if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET[
 			continue;
 		}
 		// Now really check whether point is inside polygon
+		$polygon['data'][] = $polygon['data'][0]; // Add first point as last point (= close polygon)
 		$inside = $pointLocation->pointInPolygon($point, $polygon['data']);
 		debug("point in polygon #" . $polygon['polyid'] . ": " . $inside . "<br>");
 		if ($inside) {
