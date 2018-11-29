@@ -1,7 +1,7 @@
 <?php
 
 const hood_mysql_fields = '
-	ID,
+	ID as id,
 	name,
 	ESSID_AP as essid,
 	BSSID_MESH as mesh_bssid,
@@ -210,13 +210,13 @@ function getHoodByGeo($lat, $lon)
 
     // check for every hood if it's nearer than the hood before
     while ($result = $rs->fetch(PDO::FETCH_ASSOC)) {
-        debug("\n\nhood: " . $result['name'] . ', CenterLat: ' . $result['lat'] . ', hoodCenterLon: ' . $result['lon'] . ', hoodID: ' . $result['ID']);
+        debug("\n\nhood: " . $result['name'] . ', CenterLat: ' . $result['lat'] . ', hoodCenterLon: ' . $result['lon'] . ', hoodID: ' . $result['id']);
 
         $distance = distance_haversine($result['lat'], $result['lon'], $lat, $lon);
         debug('distance: $distance');
 
         if ($distance <= $current_hood_dist) {
-            debug('Shorter distance found for hood ' . $result['ID'] . '(' . $result['name'] . ')');
+            debug('Shorter distance found for hood ' . $result['id'] . '(' . $result['name'] . ')');
             $current_hood_dist = $distance;
             $best_result = $result;
         }

@@ -108,8 +108,8 @@ if (empty($hood)) {
 $json = array();
 $json['version'] = 1;
 $json['network'] = array('ula_prefix' => $hood['prefix']);
-$json['vpn'] = getAllVPNs($hood['ID']);
-unset($hood['ID']);
+$json['vpn'] = getAllVPNs($hood['id']);
+unset($hood['id']);
 unset($hood['prefix']);
 
 unset($hood['lat']);
