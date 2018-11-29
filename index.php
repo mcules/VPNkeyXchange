@@ -18,7 +18,15 @@ const DEBUG = false;
 
 $hood = array();
 
-if (isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "" && is_numeric($_GET['lat']) && is_numeric($_GET['long'])) {
+if (isset($_GET['hoodid']) && $_GET['hoodid']) {
+	debug("Searching a hood on ID " . $_GET['hoodid'] . ":");
+	$hood = getHoodById($_GET['hoodid']);
+	if (!empty($hood)) {
+		debug($hood);
+	} else {
+		exit(showError(400, "Hood not found"));
+	}
+} elseif(isset($_GET['lat']) && $_GET['lat'] !== "" && isset($_GET['long']) && $_GET['long'] !== "" && is_numeric($_GET['lat']) && is_numeric($_GET['long'])) {
 	$lat = $_GET['lat'];
 	$lon = $_GET['long'];
 	$point = array($lon,$lat); // coordinates of router

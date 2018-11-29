@@ -219,6 +219,26 @@ function getHoodByGeo($lat, $lon)
     return $best_result;
 }
 
+/**
+ * Get hood data based on KeyXchange ID.
+ *
+ * @param string $hoodid hood ID
+ * @return array hood data
+ */
+function getHoodById($hoodid)
+{
+    // load hood from DB
+    try {
+        $q = 'SELECT '.hood_mysql_fields.' FROM hoods WHERE ID = :hoodid;';
+        $rs = db::getInstance()->prepare($q);
+        $rs->bindParam(':hoodid', $hoodid);
+        $rs->execute();
+    } catch (PDOException $e) {
+        exit(showError(500, $e));
+    }
+    return $rs->fetch(PDO::FETCH_ASSOC);
+}
+
 function getTrainstation()
 {
     try {
