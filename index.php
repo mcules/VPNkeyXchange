@@ -28,9 +28,12 @@ if (isset($_GET['hoodid']) && $_GET['hoodid']) {
 	$lat = $_GET['lat'];
 	$lon = $_GET['long'];
 	$point = array($lon,$lat); // coordinates of router
+	$polyon = (isset($_GET['poly']) && $_GET['poly']==0) ? false : true; // default on, disable with poly=0
 
 	// Zuerst nach geojson hood pruefen
-	$hood = processPoly($point);
+	if($polyon) {
+		$hood = processPoly($point);
+	}
 
 	// danach voronoi wenn keine PolyHood gefunden wurde
 	if (empty($hood)) {
