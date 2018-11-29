@@ -182,11 +182,11 @@ function distance_haversine($lat1, $lon1, $lat2, $lon2)
 }
 
 /**
- * Check is the given geo coordinates are within one of the hoods.
+ * Check if the given geo coordinates are within one of the hoods.
  *
  * @param double $lat latitude point 1
  * @param double $lon longitude point 1
- * @return integer hood-id
+ * @return array hood data
  */
 function getHoodByGeo($lat, $lon)
 {
