@@ -138,13 +138,7 @@ class db
  */
 function showError($code, $msg)
 {
-    if ($code == 400) {
-        header('HTTP/1.0 400 Bad Request');
-    } elseif ($code == 500) {
-        header('HTTP/1.0 500 Internal Server Error');
-    } elseif ($code == 503) {
-        header('HTTP/1.0 503 Service Unavailable');
-    }
+    http_response_code($code);
 
     header('Content-Type: application/json');
 
