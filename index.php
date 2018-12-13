@@ -62,7 +62,8 @@ unset($hood['lon']);
 
 $json['hood'] = $hood;
 
-echo json_encode($json);
+header('Content-Type: application/json');
+echo json_encode($json, JSON_PRETTY_PRINT);
 
 // vim: expandtab:sw=2:ts=2
 ?>
