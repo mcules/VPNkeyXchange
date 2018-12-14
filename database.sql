@@ -32,7 +32,7 @@ CREATE TABLE `gateways` (
   `ID` int(10) unsigned NOT NULL,
   `name` varchar(50) NOT NULL,
   `publickey` char(64) NOT NULL,
-  `ip` char(15) NOT NULL,
+  `ip` varchar(80) NOT NULL,
   `port` smallint(5) unsigned NOT NULL,
   `hood_ID` int(10) unsigned NOT NULL DEFAULT '1',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -77,7 +77,7 @@ CREATE TABLE `hoods` (
   `channel5` tinyint(3) unsigned NOT NULL DEFAULT '40',
   `mode5` char(5) NOT NULL DEFAULT 'ht20',
   `mesh_type5` varchar(10) NOT NULL DEFAULT '802.11s',
-  `upgrade_path` varchar(50) NOT NULL,
+  `upgrade_path` varchar(100) NOT NULL,
   `changedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
