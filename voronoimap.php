@@ -19,7 +19,7 @@ while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 			'type' => $result ['name'],
 			'lat' => $result ['lat'],
 			'lon' => $result ['lon'],
-			'color' => "#F00" 
+			'color' => "#F00"
 		));
 		array_push($hoodssort,$result['name']);
 	}
@@ -231,7 +231,7 @@ p {
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-	
+
 	<script>
 	showHide = function(selector) {
 		d3.select(selector).select('.hide').on('click', function() {
@@ -415,12 +415,12 @@ p {
 		attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 		maxZoom: 18
 	}).addTo(map);
-	
+
 	var Burghaslach = new L.LatLng(49.733, 10.6); // Zentrum von Feifunk-franken
 	map.setView(Burghaslach, 9);
-	
+
 	points = JSON.parse('<?php echo json_encode($hoods) ?>');
-	
+
 	voronoiMap(map, points);
 	</script>
 </body>

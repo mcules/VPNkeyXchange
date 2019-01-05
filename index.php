@@ -45,7 +45,7 @@ if (isset($_GET['hoodid']) && $_GET['hoodid']) {
 	}
 }
 
-if (empty($hood)) { 
+if (empty($hood)) {
 	debug("No hood found, using Trainstaion:");
 	$hood = getTrainstation();
 	debug($hood);
