@@ -7,7 +7,7 @@ $hoodfilemode = isset($_GET['hoodfile']);
 $polydata = getPolyhoodsByHood(); // read polygon data for later use
 
 try {
-	$q = 'SELECT ID, name, net, lat, lon FROM hoods;';
+	$q = 'SELECT ID, name, net, lat, lon, ESSID_AP FROM hoods;';
 	$rs = db::getInstance()->prepare($q);
 	$rs->execute();
 } catch (PDOException $e) {
