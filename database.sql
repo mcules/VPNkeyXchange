@@ -69,7 +69,6 @@ CREATE TABLE `hoods` (
   `ESSID_AP` varchar(32) NOT NULL,
   `ESSID_MESH` varchar(32) NOT NULL,
   `BSSID_MESH` varchar(17) NOT NULL,
-  `mesh_id` varchar(32) NOT NULL,
   `protocol` varchar(50) NOT NULL DEFAULT 'batman-adv-v15',
   `channel2` tinyint(3) unsigned NOT NULL DEFAULT '13',
   `mode2` char(4) NOT NULL DEFAULT 'ht20',
@@ -85,12 +84,12 @@ CREATE TABLE `hoods` (
 -- Dumping data for table `hoods`
 --
 
-INSERT INTO `hoods` (`ID`, `name`, `net`, `lat`, `lon`, `prefix`, `ntp_ip`, `ESSID_AP`, `ESSID_MESH`, `BSSID_MESH`, `mesh_id`, `protocol`, `channel2`, `mode2`, `mesh_type2`, `channel5`, `mode5`, `mesh_type5`, `upgrade_path`, `changedOn`) VALUES
-(0, 'TrainstationV2', '10.83.0.0/22', NULL, NULL, 'fd43:5602:29bd:0:/64', 'fd43:5602:29bd:ffff::1', 'trainstation.freifunk', 'batman.trainstation.freifunk', 'ca:ff:ee:ba:be:00', 'mesh.trainstation.freifunk', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2017-11-22 13:08:54'),
-(1, 'NuernbergV2', '10.83.4.0/22', 49.444, 11.05, 'fd43:5602:29bd:3:/64', 'fd43:5602:29bd:ffff::1', 'nuernberg.freifunk', 'batman.nuernberg.freifunk', 'ca:ff:ee:ba:be:03', 'mesh.nuernberg.freifunk', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2017-10-22 01:47:41'),
-(2, 'FuerthV2', '10.83.8.0/22', 49.4814, 10.966, 'fd43:5602:29bd:4:/64', 'fd43:5602:29bd:ffff::1', 'fuerth.freifunk', 'mesh.fue.fff', 'ca:ff:ee:ba:be:02', 'mesh.fue.fff', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2018-08-05 08:01:24'),
-(31, 'ErlangenStadt', '1234', NULL, NULL, '1234', '1234', 'ErlangenStadt', 'ErlangenStadt', 'ErlangenStadt', 'ErlangenStadt', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2018-10-24 12:19:14'),
-(32, 'FuerthStadt', '1234', NULL, NULL, '1234', '1234', 'FuerthStadt', 'FuerthStadt', 'FuerthStadt', 'FuerthStadt', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2018-10-24 10:19:14');
+INSERT INTO `hoods` (`ID`, `name`, `net`, `lat`, `lon`, `prefix`, `ntp_ip`, `ESSID_AP`, `ESSID_MESH`, `BSSID_MESH`, `protocol`, `channel2`, `mode2`, `mesh_type2`, `channel5`, `mode5`, `mesh_type5`, `upgrade_path`, `changedOn`) VALUES
+(0, 'TrainstationV2', '10.83.0.0/22', NULL, NULL, 'fd43:5602:29bd:0:/64', 'fd43:5602:29bd:ffff::1', 'trainstation.freifunk', 'mesh.trainstation.freifunk', 'ca:ff:ee:ba:be:00', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2017-11-22 13:08:54'),
+(1, 'NuernbergV2', '10.83.4.0/22', 49.444, 11.05, 'fd43:5602:29bd:3:/64', 'fd43:5602:29bd:ffff::1', 'nuernberg.freifunk', 'mesh.nuernberg.freifunk', 'ca:ff:ee:ba:be:03', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2017-10-22 01:47:41'),
+(2, 'FuerthV2', '10.83.8.0/22', 49.4814, 10.966, 'fd43:5602:29bd:4:/64', 'fd43:5602:29bd:ffff::1', 'fuerth.freifunk', 'mesh.fue.fff', 'ca:ff:ee:ba:be:02', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2018-08-05 08:01:24'),
+(31, 'ErlangenStadt', '1234', NULL, NULL, '1234', '1234', 'ErlangenStadt#AP', 'ErlangenStadt#MESH', '', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2018-10-24 12:19:14'),
+(32, 'FuerthStadt', '1234', NULL, NULL, '1234', '1234', 'FuerthStadt#AP', 'FuerthStadt#MESH', '', 'batman-adv-v15', 13, 'ht20', '802.11s', 40, 'ht20', '802.11s', '', '2018-10-24 10:19:14');
 
 -- --------------------------------------------------------
 

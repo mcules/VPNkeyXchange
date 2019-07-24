@@ -6,7 +6,7 @@ const hood_mysql_fields = '
 	ESSID_AP as essid,
 	BSSID_MESH as mesh_bssid,
 	ESSID_MESH as mesh_essid,
-	mesh_id,
+	ESSID_MESH as mesh_id,
 	protocol,
 	channel2,
 	mode2,
