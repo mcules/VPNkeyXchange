@@ -68,7 +68,8 @@ tests::assertEquals(
 
 /* Get Trainstation */
 tests::assertEquals(
-    '{
+    '
+{
     "version": 1,
     "network": {
         "ula_prefix": "fd43:5602:29bd:0:\/64"
@@ -98,16 +99,16 @@ tests::assertEquals(
         "mesh_type5": "802.11s",
         "upgrade_path": "http:\/\/[fd43:5602:29bd:ffff::feee]:83",
         "ntp_ip": "fd43:5602:29bd:ffff::1",
-        "timestamp": "1577303703"
+        "timestamp": "1577226481"
     }
 }',
-    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2/"),
     "Get Trainstation");
 
 /* Get not existing Hood */
 tests::assertEquals(
-    '{"error":{"msg":"Hood not found","url":"http:\/\/fff.itstall.de\/?hoodid=-1"}}',
-    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//?hoodid=-1"),
+    '{"error":{"msg":"Hood not found","url":"http:\/\/keyserver.freifunk-franken.de\/v2\/?hoodid=-1"}}',
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2/?hoodid=-1"),
     "Get not existing Hood");
 
 /* Get Polyhood from lat 50.94090, lon 9.66831 (freifunk-hersfeld.de) */
