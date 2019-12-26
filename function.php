@@ -172,7 +172,7 @@ function getHoodByGeo($lat, $lon)
 
 	// load hoods from DB
 	try {
-		$q = 'SELECT '.hood_mysql_fields.' FROM hoods WHERE lat IS NOT NULL AND lon IS NOT NULL;';
+		$q = 'SELECT ' . hood_mysql_fields . ' FROM hoods WHERE lat IS NOT NULL AND lon IS NOT NULL AND active=1;';
 		$rs = db::getInstance()->prepare($q);
 		$rs->execute();
 	} catch (PDOException $e) {
@@ -332,14 +332,7 @@ function processPoly($point) {
 		debug("point in polygon #" . $polygon['polyid'] . ": " . $inside . "<br>");
 		if ($inside) {
 			debug("PolyHood gefunden...");
-			try {
-				$rs = db::getInstance()->prepare("SELECT ".hood_mysql_fields." FROM hoods WHERE id=:hoodid;");
-				$rs->bindParam(':hoodid', $polygon['hoodid'], PDO::PARAM_INT);
-				$rs->execute();
-			} catch (PDOException $e) {
-				exit(showError(500, $e));
-			}
-			$hood = $rs->fetch(PDO::FETCH_ASSOC);
+			$hood = $this->getHoodById($polygon['hoodid']);
 			break;
 		}
 	}

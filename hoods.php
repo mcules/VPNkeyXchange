@@ -7,7 +7,7 @@ $hoodfilemode = isset($_GET['hoodfile']);
 $polydata = getPolyhoodsByHood(); // read polygon data for later use
 
 try {
-	$q = 'SELECT ID, name, net, lat, lon, ESSID_AP FROM hoods;';
+	$q = 'SELECT ID, name, net, lat, lon, ESSID_AP, active FROM hoods WHERE active=1;';
 	$rs = db::getInstance()->prepare($q);
 	$rs->execute();
 } catch (PDOException $e) {
@@ -17,28 +17,29 @@ try {
 $hoods = array();
 while ( $result = $rs->fetch ( PDO::FETCH_ASSOC ) ) {
 	$hood = array();
-	$hood['id']   = intval($result['ID']);
+	$hood['id'] = intval($result['ID']);
 	$hood['name'] = $result['name'];
-	$hood['net']  = $result['net'];
+	$hood['net'] = $result['net'];
 	$hood['essid_ap'] = $result['ESSID_AP'];
+	$hood['active'] = $result['active'];
 	if ($result ['lat'] > 0 && $result ['lon'] > 0) {
 		$hood['lat'] = floatval($result['lat']);
 		$hood['lon'] = floatval($result['lon']);
 	}
 
-	if(isset($polydata[$result['ID']])) {
+	if (isset($polydata[$result['ID']])) {
 		$hood['polygons'] = array_values($polydata[$result['ID']]); // we don't need the polyids here
 	}
 
-	if(!$hoodfilemode) {
+	if (!$hoodfilemode) {
 		array_push($hoods, $hood);
 	} else {
 		$ispoly = false;
-		if(isset($hood['polygons'])) {
+		if (isset($hood['polygons'])) {
 			$sumlat = 0;
 			$sumlon = 0;
 			// calculate average coordinates of first polygon; this may give wrong coordinates, but this is relatively unlikely
-			foreach($hood['polygons'][0] as $poly) {
+			foreach ($hood['polygons'][0] as $poly) {
 				$sumlat += $poly['lat'];
 				$sumlon += $poly['lon'];
 			}
