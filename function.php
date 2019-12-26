@@ -332,7 +332,7 @@ function processPoly($point) {
 		debug("point in polygon #" . $polygon['polyid'] . ": " . $inside . "<br>");
 		if ($inside) {
 			debug("PolyHood gefunden...");
-			$hood = $this->getHoodById($polygon['hoodid']);
+			$hood = getHoodById($polygon['hoodid']);
 			break;
 		}
 	}
