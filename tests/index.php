@@ -13,12 +13,12 @@ require_once "tests.class.php";
 /* Get Blocklist - Browser */
 tests::assertEquals(
     "<table><tr><td>Timestamp</td><td>fastd Key</td><td>Begr&uuml;ndung</td><tr><td>2019-12-25 18:47:54</td><td>b40d14fe6e833f13a0e483f038ca7e22b9acc83a48e09e776f6bf6ac79e24a08</td><td>Loop zwischen mehreren Hoods</td></tr><tr><td>2019-12-25 18:47:54</td><td>8ea0488eab12b97c1b82175f0d1c022140a2984965e7113b629819a6c73c713d</td><td>Loop zwischen mehreren Hoods</td></tr></table>",
-    tests::get_web_page("https://fff.itstall.de/blocklist.php"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//blocklist.php"),
     "Get Blocklist - Browser");
 
 /* Get Blocklist - Cron */
 tests::assertEquals("b40d14fe6e833f13a0e483f038ca7e22b9acc83a48e09e776f6bf6ac79e24a08\n8ea0488eab12b97c1b82175f0d1c022140a2984965e7113b629819a6c73c713d",
-    tests::get_web_page("https://fff.itstall.de/blocklist.php?cron=1"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//blocklist.php?cron=1"),
     "Get Blocklist - Cron");
 
 /* Get Hood Id 1 */
@@ -63,7 +63,7 @@ tests::assertEquals(
         "timestamp": "1577226481"
     }
 }',
-    tests::get_web_page("https://fff.itstall.de/index.php?hoodid=1"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//index.php?hoodid=1"),
     "Get Hood Id 1");
 
 /* Get Trainstation */
@@ -101,13 +101,13 @@ tests::assertEquals(
         "timestamp": "1577303703"
     }
 }',
-    tests::get_web_page("https://fff.itstall.de/"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//"),
     "Get Trainstation");
 
 /* Get not existing Hood */
 tests::assertEquals(
     '{"error":{"msg":"Hood not found","url":"http:\/\/fff.itstall.de\/?hoodid=-1"}}',
-    tests::get_web_page("https://fff.itstall.de/?hoodid=-1"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//?hoodid=-1"),
     "Get not existing Hood");
 
 /* Get Polyhood from lat 50.94090, lon 9.66831 (freifunk-hersfeld.de) */
@@ -153,7 +153,7 @@ tests::assertEquals(
         "timestamp": "1577226481"
     }
 }',
-    tests::get_web_page("https://fff.itstall.de/index.php?lat=50.94090&long=9.66831"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//index.php?lat=50.94090&long=9.66831"),
     "Get Polyhood from lat 50.94090, lon 9.66831 (freifunk-hersfeld.de)");
 
 /* Get voronoi from lat 52.5219184, lon 13.411026 (berlin.freifunk-franken.de) */
@@ -198,5 +198,5 @@ tests::assertEquals(
         "timestamp": "1577226481"
     }
 }',
-    tests::get_web_page("https://fff.itstall.de/index.php?lat=52.5219184&long=13.411026"),
+    tests::get_web_page("https://keyserver.freifunk-franken.de/v2//index.php?lat=52.5219184&long=13.411026"),
     "Get voronoi from lat 52.5219184, lon 13.411026 (berlin.freifunk-franken.de)");
