@@ -7,10 +7,13 @@
  *
  * @license https://www.gnu.org/licenses/agpl-3.0.txt AGPL-3.0
  */
+
 /* Include Database class */
-include "db.inc.php";
+include "db.class.php";
+
 /* Output variable */
 $strResult = "";
+
 try {
     if (!$_REQUEST['cron']) {
         $strResult .= "<table>";
